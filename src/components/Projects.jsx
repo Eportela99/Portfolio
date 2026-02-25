@@ -13,7 +13,7 @@ const featured = {
     'Compliance Dashboard: fleet-wide PASS/FAIL reporting exportable to HTML/CSV',
     'PC Repair & Diagnostics: DISM, SFC, disk health, battery reports, network reset',
   ],
-  tags: ['PowerShell', 'WinForms', 'Windows 10/11', 'PowerShell 5.1'],
+  tags: ['PowerShell', 'WinForms', 'Windows 10/11'],
   github: '#',
 }
 

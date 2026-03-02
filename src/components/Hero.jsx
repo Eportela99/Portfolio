@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './Hero.css'
-import profilePic from '../assets/Profile.png'
+import CodeAvatar from './CodeAvatar'
 
 const roles = [
   'Full Stack Developer',
@@ -144,12 +144,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="hero-avatar">
-        <div className="avatar-ring" />
-        <div className="avatar-placeholder">
-          <img src={profilePic} alt="Enrique L. Portela" className="avatar-img" />
-        </div>
-      </div>
+      <CodeAvatar />
 
       <div className="scroll-indicator">
         <div className="scroll-dot" />

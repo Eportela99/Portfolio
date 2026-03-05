@@ -1,0 +1,525 @@
+/* GitTree Interactive Demo — macOS app simulator */
+.gt-window {
+  background: #0D1117;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 420px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(0, 212, 170, 0.07);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: #e6edf3;
+  user-select: none;
+  cursor: default;
+}
+
+/* ── Title bar ── */
+.gt-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  height: 36px;
+  background: #161B22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.gt-traffic {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.gt-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.gt-red    { background: #FF5F57; }
+.gt-yellow { background: #FEBC2E; }
+.gt-green  { background: #28C840; }
+
+.gt-win-title {
+  flex: 1;
+  text-align: center;
+  font-size: 11.5px;
+  color: #6e7681;
+  font-weight: 500;
+}
+
+.gt-toolbar-right {
+  display: flex;
+  gap: 5px;
+}
+
+.gt-tb-btn {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #6e7681;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.gt-tb-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #e6edf3;
+}
+
+.gt-tb-accent {
+  background: rgba(0, 212, 170, 0.1);
+  border-color: rgba(0, 212, 170, 0.28);
+  color: #00D4AA;
+}
+
+.gt-tb-accent:hover {
+  background: rgba(0, 212, 170, 0.18);
+  color: #00D4AA;
+}
+
+/* ── Main tabs ── */
+.gt-main-tabs {
+  display: flex;
+  background: #161B22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.gt-main-tab {
+  flex: 1;
+  padding: 7px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #6e7681;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.gt-main-tab.active {
+  color: #00D4AA;
+  border-bottom-color: #00D4AA;
+}
+
+.gt-main-tab:hover:not(.active) {
+  color: #c9d1d9;
+}
+
+/* ── Body ── */
+.gt-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.gt-sidebar {
+  width: 152px;
+  background: #0D1117;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.gt-sidebar-header {
+  padding: 9px 12px 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #30363d;
+  text-transform: uppercase;
+}
+
+.gt-branch-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.gt-branch-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.gt-branch-active {
+  background: rgba(0, 212, 170, 0.07) !important;
+}
+
+.gt-branch-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gt-branch-name {
+  font-size: 10.5px;
+  color: #8b949e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.gt-branch-active .gt-branch-name {
+  color: #00D4AA;
+}
+
+.gt-branch-cur {
+  font-size: 7px;
+  color: #00D4AA;
+}
+
+/* ── Center panel ── */
+.gt-center {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.gt-center-tabs {
+  display: flex;
+  background: #161B22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.gt-center-tab {
+  flex: 1;
+  padding: 6px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #6e7681;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.gt-center-tab.active {
+  color: #00D4AA;
+  border-bottom-color: #00D4AA;
+}
+
+.gt-center-tab:hover:not(.active) {
+  color: #c9d1d9;
+}
+
+/* ── Commit history ── */
+.gt-commits-scroll {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.gt-commit-row {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  position: relative;
+  transition: background 0.12s;
+}
+
+.gt-hov {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.gt-sel {
+  background: rgba(0, 212, 170, 0.07);
+}
+
+.gt-sel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #00D4AA;
+}
+
+.gt-commit-info {
+  padding: 5px 8px 5px 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.gt-commit-refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 3px;
+}
+
+.gt-ref-badge {
+  font-size: 8px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+.gt-commit-msg {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #e6edf3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gt-commit-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: 9px;
+  color: #6e7681;
+}
+
+.gt-hash {
+  color: #00D4AA;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+.gt-sep {
+  opacity: 0.4;
+}
+
+/* ── Changes tab ── */
+.gt-changes-scroll {
+  overflow-y: auto;
+  flex: 1;
+  padding: 6px 0;
+}
+
+.gt-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #30363d;
+  padding: 4px 12px 3px;
+  text-transform: uppercase;
+}
+
+.gt-file-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.gt-file-row:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.gt-fstatus {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: monospace;
+  width: 14px;
+  text-align: center;
+}
+
+.gt-s-m { color: #F5A623; }
+.gt-s-a { color: #3DD68C; }
+.gt-s-d { color: #FF5A5A; }
+
+.gt-fname {
+  font-size: 10.5px;
+  color: #c9d1d9;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gt-faction {
+  font-size: 13px;
+  font-weight: 700;
+  width: 16px;
+  text-align: center;
+}
+
+.gt-faction-remove { color: #FF5A5A; }
+.gt-faction-add    { color: #3DD68C; }
+
+.gt-empty-hint {
+  font-size: 10px;
+  color: #30363d;
+  padding: 4px 12px;
+  font-style: italic;
+}
+
+/* ── Stash ── */
+.gt-stash-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Right detail panel ── */
+.gt-detail {
+  width: 178px;
+  background: #0D1117;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.gt-detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.gt-detail-hash {
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 10px;
+  color: #00D4AA;
+  font-weight: 600;
+}
+
+.gt-detail-date {
+  font-size: 9px;
+  color: #6e7681;
+}
+
+.gt-detail-msg {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #e6edf3;
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+
+.gt-detail-author {
+  font-size: 9px;
+  color: #6e7681;
+  margin-bottom: 12px;
+}
+
+.gt-detail-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #30363d;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.gt-detail-file {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 9.5px;
+  color: #8b949e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.gt-detail-file-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #00D4AA;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.gt-detail-stats {
+  display: flex;
+  gap: 8px;
+  margin-top: 9px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.gt-add-stat { color: #3DD68C; }
+.gt-del-stat { color: #FF5A5A; }
+
+.gt-merge-note {
+  font-size: 10px;
+  color: #6e7681;
+  font-style: italic;
+  margin-top: 6px;
+}
+
+.gt-detail-empty {
+  font-size: 10px;
+  color: #30363d;
+  font-style: italic;
+  padding-top: 8px;
+}
+
+/* ── Diff view ── */
+.gt-diff-view {
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+.gt-diff-filename {
+  font-size: 9.5px;
+  color: #8b949e;
+  font-weight: 600;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 5px;
+}
+
+.gt-diff-line {
+  font-size: 8.5px;
+  line-height: 1.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.gt-diff-add  { color: #3DD68C; background: rgba(61, 214, 140, 0.07); }
+.gt-diff-del  { color: #FF5A5A; background: rgba(255, 90, 90, 0.07); }
+.gt-diff-ctx  { color: #6e7681; }
+
+/* ── Scrollbar styling inside demo ── */
+.gt-commits-scroll::-webkit-scrollbar,
+.gt-changes-scroll::-webkit-scrollbar,
+.gt-detail::-webkit-scrollbar,
+.gt-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.gt-commits-scroll::-webkit-scrollbar-track,
+.gt-changes-scroll::-webkit-scrollbar-track,
+.gt-detail::-webkit-scrollbar-track,
+.gt-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.gt-commits-scroll::-webkit-scrollbar-thumb,
+.gt-changes-scroll::-webkit-scrollbar-thumb,
+.gt-detail::-webkit-scrollbar-thumb,
+.gt-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 170, 0.25);
+  border-radius: 2px;
+}

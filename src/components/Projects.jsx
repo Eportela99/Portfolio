@@ -1,4 +1,5 @@
 import './Projects.css'
+import GitTreeDemo from './GitTreeDemo'
 
 const featured = {
   title: 'WinToolkit v2.0',
@@ -138,6 +139,48 @@ export default function Projects() {
               muted
               playsInline
             />
+          </div>
+        </div>
+
+        {/* ── Featured project: GitTree ── */}
+        <div className="featured-project featured-project-rev glass-card fade-in">
+          <div className="featured-demo-wrap">
+            <GitTreeDemo />
+          </div>
+
+          <div className="featured-info">
+            <div className="featured-label">Featured Project</div>
+            <h3 className="featured-title">GitTree</h3>
+            <p className="featured-subtitle">Visual Git &amp; GitHub Manager for macOS</p>
+            <p className="featured-description">
+              A native macOS app built with SwiftUI that brings your entire git workflow into one
+              dark-themed interface. Visualize branch history with a real-time commit graph,
+              manage branches, stage files, and interact with GitHub — all without touching a terminal.
+            </p>
+
+            <ul className="featured-highlights">
+              {[
+                'Visual commit graph with colored branch lanes and merge curves',
+                'Full branch CRUD: create, checkout, rename, delete, merge, push',
+                'Staging area with per-file stage/unstage/discard and inline diff viewer',
+                'GitHub integration: repos, pull requests, issues via gh CLI',
+                'Detached HEAD workflow: create branch, move pointer, or return',
+                'Stash manager, admin privilege escalation, PKG installer',
+              ].map(h => (
+                <li key={h}>
+                  <span className="highlight-dot" />
+                  {h}
+                </li>
+              ))}
+            </ul>
+
+            <div className="featured-footer">
+              <div className="project-tags">
+                {['SwiftUI', 'macOS', 'MVVM', 'gh CLI', 'Canvas API'].map(tag => (
+                  <span key={tag} className="project-tag">{tag}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

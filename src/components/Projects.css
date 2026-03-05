@@ -126,6 +126,16 @@
   display: block;
 }
 
+/* Reversed featured layout (demo on left, info on right) */
+.featured-project-rev {
+  grid-template-columns: 1fr 1fr;
+}
+
+.featured-demo-wrap {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
 /* Other projects grid */
 .projects-grid {
   display: grid;
@@ -240,9 +250,14 @@
 }
 
 @media (max-width: 1024px) {
-  .featured-project {
+  .featured-project,
+  .featured-project-rev {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .featured-project-rev .featured-demo-wrap {
+    order: -1;
   }
 
   .projects-grid {

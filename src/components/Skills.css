@@ -2,126 +2,127 @@
   background: var(--bg-primary);
 }
 
-.skills-layout {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 4rem;
-  align-items: start;
+/* ── Orbit scene ── */
+.sk-orbit-scene {
+  position: relative;
+  width: 580px;
+  height: 580px;
+  margin: 0 auto;
 }
 
-/* Tech grid */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+.sk-track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
-.skill-badge {
-  padding: 1.2rem 0.8rem;
+.sk-track-inner {
+  width: 296px;
+  height: 296px;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.05) inset;
+}
+
+.sk-track-outer {
+  width: 470px;
+  height: 470px;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.05) inset;
+}
+
+/* Center emblem */
+.sk-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(0, 212, 255, 0.08), rgba(124, 58, 237, 0.12));
+  border: 2px solid rgba(0, 212, 255, 0.4);
+  box-shadow:
+    0 0 30px rgba(0, 212, 255, 0.25),
+    0 0 70px rgba(124, 58, 237, 0.15),
+    inset 0 0 20px rgba(0, 212, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.sk-center-code {
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+/* Orbit items */
+.sk-orb-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+  padding: 8px 12px;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+  z-index: 5;
   cursor: default;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  min-width: 68px;
 }
 
-.skill-badge:hover {
-  border-color: var(--glass-border-hover);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
-  transform: translateY(-4px);
-  background: var(--glass-bg-hover);
+.sk-orb-item:hover {
+  border-color: rgba(0, 212, 255, 0.55);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.25);
+  background: rgba(0, 212, 255, 0.07);
 }
 
-.skill-icon {
-  font-size: 2rem;
-  transition: filter 0.3s ease;
+.sk-orb-icon {
+  font-size: 1.5rem;
+  transition: filter 0.3s;
 }
 
-.skill-img-icon {
-  width: 2rem;
-  height: 2rem;
+.sk-orb-img {
+  width: 1.5rem;
+  height: 1.5rem;
   object-fit: contain;
-  transition: filter 0.3s ease;
 }
 
-.skill-badge:hover .skill-icon,
-.skill-badge:hover .skill-img-icon {
+.sk-orb-item:hover .sk-orb-icon,
+.sk-orb-item:hover .sk-orb-img {
   filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.6));
 }
 
-.skill-name {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  text-align: center;
-}
-
-/* Proficiency bars */
-.bars-heading {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 2rem;
-}
-
-.skill-bar-item {
-  margin-bottom: 1.6rem;
-}
-
-.bar-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.bar-label {
-  font-size: 0.9rem;
+.sk-orb-name {
+  font-size: 0.68rem;
   color: var(--text-secondary);
   font-weight: 500;
 }
 
-.bar-value {
-  font-size: 0.85rem;
-  color: var(--accent-cyan);
-  font-weight: 600;
-}
 
-.bar-track {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.bar-fill {
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-  border-radius: 3px;
-  box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
-  animation: fill-bar 1.2s ease forwards;
-  animation-delay: 0.3s;
-}
-
-@keyframes fill-bar {
-  from { width: 0; }
-  to { width: var(--bar-width); }
-}
-
-@media (max-width: 1024px) {
-  .skills-layout {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .sk-orbit-scene {
+    transform: scale(0.62);
+    transform-origin: top center;
+    margin-bottom: -210px;
   }
 
-  .skills-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
   .skills-grid {
     grid-template-columns: repeat(3, 1fr);
   }

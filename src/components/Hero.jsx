@@ -49,6 +49,8 @@ export default function Hero() {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+    // Disable on mobile — prevents visual overlap with content
+    if (window.innerWidth <= 768) return
     const ctx = canvas.getContext('2d')
 
     const resize = () => {
@@ -124,7 +126,7 @@ export default function Hero() {
 
       <div className="hero-content">
         <div className="hero-greeting">Hello World, I&apos;m</div>
-        <h1 className="hero-name">
+        <h1 className="hero-name" data-text="Enrique L. Portela">
           Enrique L. <span className="neon-text">Portela</span>
         </h1>
         <div className="hero-role">
@@ -139,8 +141,8 @@ export default function Hero() {
           <a href="#projects" className="btn-primary">
             <span>View My Work</span>
           </a>
-          <a href="#contact" className="btn-outline">
-            Download CV
+          <a href="/Resume-Enrique-Portela.html" target="_blank" rel="noreferrer" className="btn-outline">
+            Download Resume
           </a>
         </div>
       </div>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enrique L. Portela — Resume</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 32px auto;
+      background: #fff;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 1100px;
+    }
+
+    /* ── LEFT SIDEBAR ── */
+    .sidebar {
+      background: #0f1c38;
+      color: #cbd5e1;
+      padding: 40px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .sidebar-name {
+      border-bottom: 1px solid rgba(0,212,255,0.25);
+      padding-bottom: 24px;
+    }
+
+    .sidebar-name h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-name h1 span {
+      color: #00d4ff;
+    }
+
+    .sidebar-name .title {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #00d4ff;
+      opacity: 0.85;
+    }
+
+    .sidebar h2 {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #00d4ff;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(0,212,255,0.2);
+    }
+
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .contact-list li {
+      font-size: 0.82rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #cbd5e1;
+    }
+
+    .contact-list li .icon {
+      color: #00d4ff;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .contact-list a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+    .contact-list a:hover { text-decoration: underline; }
+
+    .edu-block { margin-bottom: 14px; }
+    .edu-block .school {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+    .edu-block .degree {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .cert-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .cert-list li {
+      font-size: 0.8rem;
+      padding-left: 12px;
+      position: relative;
+      color: #cbd5e1;
+    }
+    .cert-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #00d4ff;
+      font-weight: 700;
+    }
+
+    .lang-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .lang-list li {
+      font-size: 0.82rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #cbd5e1;
+    }
+    .lang-badge {
+      font-size: 0.68rem;
+      background: rgba(0,212,255,0.12);
+      color: #00d4ff;
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 20px;
+      padding: 2px 8px;
+    }
+
+    /* ── RIGHT MAIN ── */
+    .main {
+      padding: 40px 36px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .section-title {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #0f1c38;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #00d4ff;
+      margin-bottom: 16px;
+    }
+
+    /* Summary */
+    .summary p {
+      font-size: 0.88rem;
+      color: #374151;
+      line-height: 1.75;
+    }
+
+    /* Experience */
+    .job { margin-bottom: 22px; }
+    .job:last-child { margin-bottom: 0; }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+
+    .job-company {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f1c38;
+    }
+
+    .job-position {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #00a8cc;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .job ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-left: 0;
+    }
+
+    .job ul li {
+      font-size: 0.84rem;
+      color: #374151;
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .job ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #00d4ff;
+      font-size: 0.7rem;
+      top: 3px;
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .skill-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .skill-category {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #0f1c38;
+      padding-top: 2px;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .skill-tag {
+      font-size: 0.73rem;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-weight: 500;
+    }
+
+    /* Portfolio callout */
+    .portfolio-callout {
+      background: linear-gradient(135deg, #0f1c38, #162a50);
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .portfolio-callout p {
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+
+    .portfolio-callout p strong {
+      color: #fff;
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 2px;
+    }
+
+    .portfolio-callout a {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #00d4ff;
+      text-decoration: none;
+      white-space: nowrap;
+      border: 1px solid rgba(0,212,255,0.4);
+      padding: 6px 16px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff; font-size: 12px; }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        max-width: 100%;
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <div class="sidebar-name">
+      <h1>Enrique L.<br><span>Portela</span></h1>
+      <div class="title">Full Stack Developer &amp; IT Engineer</div>
+    </div>
+
+    <div>
+      <h2>Contact</h2>
+      <ul class="contact-list">
+        <li>
+          <span class="icon">✉</span>
+          <a href="mailto:eportela-dev@outlook.com">eportela-dev@outlook.com</a>
+        </li>
+        <li>
+          <span class="icon">✆</span>
+          (786) 554-8551
+        </li>
+        <li>
+          <span class="icon">⌖</span>
+          Miami, FL
+        </li>
+        <li>
+          <span class="icon">⬡</span>
+          <a href="https://enrique-portela.dev" target="_blank">enrique-portela.dev</a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Education</h2>
+      <div class="edu-block">
+        <div class="school">Florida International University</div>
+        <div class="degree">B.Sc. Computer Science</div>
+      </div>
+    </div>
+
+    <div>
+      <h2>Certifications</h2>
+      <ul class="cert-list">
+        <li>CompTIA A+</li>
+        <li>Windows OS Fundamentals</li>
+        <li>Adobe Illustrator CS6</li>
+        <li>Adobe Photoshop CS6</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Languages</h2>
+      <ul class="lang-list">
+        <li>English <span class="lang-badge">Fluent</span></li>
+        <li>Spanish <span class="lang-badge">Native</span></li>
+      </ul>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- Summary -->
+    <div class="summary">
+      <div class="section-title">Professional Summary</div>
+      <p>
+        Results-driven IT professional and software engineer with <strong>5+ years of hands-on experience</strong>
+        spanning full stack development, database administration, and enterprise IT infrastructure.
+        Proven track record of architecting and deploying production-grade applications, managing
+        multi-site IT operations, and delivering solutions that directly reduce costs and drive business
+        growth. Equally at home writing clean, scalable backend code and resolving complex
+        infrastructure challenges on-site — bringing both technical depth and real-world versatility
+        to every role. Known for strong problem-solving instincts, self-direction, and a consistent
+        ability to exceed expectations independently or as part of a team.
+      </p>
+    </div>
+
+    <!-- Experience -->
+    <div>
+      <div class="section-title">Experience</div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-company">Tecnica Systems</div>
+        </div>
+        <div class="job-position">IT Project Manager · Field Systems Engineer · Helpdesk</div>
+        <ul>
+          <li>Led end-to-end IT infrastructure deployments for multi-location retail clients, owning project scope, timelines, vendor coordination, and on-site execution</li>
+          <li>Architected and maintained Windows Server environments, Active Directory, and virtualization platforms (VMware / Hyper-V) supporting business-critical daily operations</li>
+          <li>Integrated third-party delivery platforms (DoorDash, Uber Eats, Instacart) into existing retail POS ecosystems, enabling new revenue streams across client locations</li>
+          <li>Managed, repaired, and maintained enterprise hardware fleets including Toshiba self-checkout systems, POS terminals, smart scales, PDAs, and digital display networks</li>
+          <li>Configured and hardened network infrastructure including VPN tunnels, firewalls, and LAN/WAN environments ensuring high availability and security compliance</li>
+          <li>Progressed from Helpdesk Technician → IT Field Technician → Project Manager through consistent performance and expanding technical ownership</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-company">ePhoneSolutions</div>
+        </div>
+        <div class="job-position">IT Technician</div>
+        <ul>
+          <li>Diagnosed and repaired smartphones, tablets, laptops, and consumer electronics achieving high first-time fix rates and fast turnaround times</li>
+          <li>Provided technical consultation to walk-in customers, translating complex hardware issues into clear actionable recommendations and driving repeat business</li>
+          <li>Managed device inventory, parts sourcing, and sales operations in a fast-paced retail service environment</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div>
+      <div class="section-title">Technical Skills</div>
+      <div class="skills-grid">
+        <div class="skill-row">
+          <div class="skill-category">Languages</div>
+          <div class="skill-tags">
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Go</span>
+            <span class="skill-tag">Java</span>
+            <span class="skill-tag">C++</span>
+            <span class="skill-tag">C#</span>
+            <span class="skill-tag">Swift</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Frontend</div>
+          <div class="skill-tags">
+            <span class="skill-tag">React</span>
+            <span class="skill-tag">HTML5</span>
+            <span class="skill-tag">CSS3</span>
+            <span class="skill-tag">SwiftUI</span>
+            <span class="skill-tag">Vite</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Backend</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Go / Gin</span>
+            <span class="skill-tag">REST APIs</span>
+            <span class="skill-tag">WebSockets</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Databases</div>
+          <div class="skill-tags">
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">MySQL</span>
+            <span class="skill-tag">MariaDB</span>
+            <span class="skill-tag">MongoDB</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">DevOps & Cloud</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">Azure</span>
+            <span class="skill-tag">Linux</span>
+            <span class="skill-tag">Windows Server</span>
+            <span class="skill-tag">Nginx</span>
+            <span class="skill-tag">Git</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Networking</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Wireshark</span>
+            <span class="skill-tag">VPN / Firewalls</span>
+            <span class="skill-tag">Active Directory</span>
+            <span class="skill-tag">TCP/IP</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-category">Creative</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Photoshop</span>
+            <span class="skill-tag">Illustrator</span>
+            <span class="skill-tag">InDesign</span>
+            <span class="skill-tag">Blender</span>
+            <span class="skill-tag">Premiere</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portfolio callout -->
+    <div class="portfolio-callout">
+      <p>
+        <strong>Portfolio &amp; Projects</strong>
+        Full stack apps, macOS tools, and IT utilities — all live and documented.
+      </p>
+      <a href="https://enrique-portela.dev" target="_blank">enrique-portela.dev →</a>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

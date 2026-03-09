@@ -184,6 +184,50 @@ export default function Projects() {
           </div>
         </div>
 
+        {/* ── Featured project: IT-DockTools ── */}
+        <div className="featured-project glass-card fade-in">
+          <div className="featured-info">
+            <div className="featured-label">Featured Project</div>
+            <h3 className="featured-title">IT Toolbox</h3>
+            <p className="featured-subtitle">Self-Hosted IT Toolbox — 50+ Tools</p>
+            <p className="featured-description">
+              A fully self-hosted IT toolbox built with Go and React, shipping over 50 working tools
+              across networking, cryptography, file processing, developer utilities, and system monitoring.
+              Deployed via Docker Compose with Nginx reverse proxy and real-time WebSocket streaming
+              for tools like port scanner, ping, and traceroute.
+            </p>
+
+            <ul className="featured-highlights">
+              {[
+                'Networking suite: port scanner, DNS lookup, traceroute, SSL checker, WHOIS, IP geolocation',
+                'Crypto & security: AES-256-GCM encryption, bcrypt, JWT decoder, SSH key generator',
+                'Real-time WebSocket streaming for port scan, ping, traceroute, and webhook tester',
+                'File tools: image converter/resizer, PDF merger, EXIF viewer, CSV↔JSON, ZIP archive',
+                'Developer tools: JSON/XML/YAML formatter, regex tester, diff viewer, color converter',
+                'Docker Info & System Stats: live CPU, RAM, disk charts via socket',
+              ].map(h => (
+                <li key={h}>
+                  <span className="highlight-dot" />
+                  {h}
+                </li>
+              ))}
+            </ul>
+
+            <div className="featured-footer">
+              <div className="project-tags">
+                {['Go', 'React', 'TypeScript', 'Docker', 'WebSockets', 'Nginx'].map(tag => (
+                  <span key={tag} className="project-tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="featured-video-wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+            {/* Screenshot placeholder — add /it-toolbox-screenshot.png to public/ */}
+            <span>Screenshot coming soon</span>
+          </div>
+        </div>
+
         {/* ── Other projects grid ── */}
         <div className="projects-grid">
           {projects.map((project) => (

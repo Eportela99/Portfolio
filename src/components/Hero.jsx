@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import './Hero.css'
-import CodeAvatar from './CodeAvatar'
+import profileImg from '../assets/Profile-Updated.png'
 
 const roles = [
   'Full Stack Developer',
+  'Database Administrator',
+  'IT Support Specialist',
+  'IT Field Service Technician',
   'Problem Solver',
-  'UI/UX Enthusiast',
-  'Open Source Contributor',
 ]
 
 export default function Hero() {
@@ -122,7 +123,7 @@ export default function Hero() {
       <canvas ref={canvasRef} className="hero-canvas" />
 
       <div className="hero-content">
-        <div className="hero-greeting">Hello, I&apos;m</div>
+        <div className="hero-greeting">Hello World, I&apos;m</div>
         <h1 className="hero-name">
           Enrique L. <span className="neon-text">Portela</span>
         </h1>
@@ -144,7 +145,9 @@ export default function Hero() {
         </div>
       </div>
 
-      <CodeAvatar />
+      <div className="hero-photo">
+        <img src={profileImg} alt="Enrique L. Portela" />
+      </div>
 
       <div className="scroll-indicator">
         <div className="scroll-dot" />

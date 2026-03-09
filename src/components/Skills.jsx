@@ -76,6 +76,19 @@ export default function Skills() {
           <p className="section-subtitle">Technologies I work with</p>
         </div>
 
+        {/* Mobile grid — shown only on small screens via CSS */}
+        <div className="sk-mobile-grid fade-in">
+          {[...INNER_SKILLS, ...OUTER_SKILLS].map(skill => (
+            <div key={skill.name} className="sk-mobile-badge">
+              {skill.icon
+                ? <i className={`${skill.icon} sk-orb-icon`} />
+                : <img src={skill.img} alt={skill.name} className="sk-orb-img" />
+              }
+              <span className="sk-orb-name">{skill.name}</span>
+            </div>
+          ))}
+        </div>
+
         <div className="sk-orbit-scene fade-in">
           <div className="sk-track sk-track-inner" />
           <div className="sk-track sk-track-outer" />

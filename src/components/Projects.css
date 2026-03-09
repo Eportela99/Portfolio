@@ -182,8 +182,25 @@
 }
 
 @media (max-width: 640px) {
+  .featured-project {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .featured-title {
+    font-size: 1.4rem;
+  }
+
+  .featured-img-wrap {
+    height: 200px;
+  }
+
   .featured-footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .featured-highlights li {
+    font-size: 0.78rem;
   }
 }

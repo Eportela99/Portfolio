@@ -59,7 +59,7 @@ export default function Hero() {
     window.addEventListener('resize', resize)
 
     const particles = []
-    const count = 80
+    const count = window.innerWidth <= 768 ? 30 : 80
 
     for (let i = 0; i < count; i++) {
       particles.push({

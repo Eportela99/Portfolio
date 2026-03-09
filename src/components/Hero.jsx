@@ -151,8 +151,16 @@ export default function Hero() {
         <img src={profileImg} alt="Enrique L. Portela" />
       </div>
 
-      <div className="scroll-indicator">
+      {/* Desktop: mouse icon */}
+      <div className="scroll-indicator scroll-indicator-mouse">
         <div className="scroll-dot" />
+      </div>
+
+      {/* Mobile: phone icon */}
+      <div className="scroll-indicator scroll-indicator-phone">
+        <div className="phone-body">
+          <div className="phone-dot" />
+        </div>
       </div>
     </section>
   )

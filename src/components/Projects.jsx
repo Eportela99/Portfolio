@@ -20,21 +20,6 @@ const featured = {
   github: 'https://github.com/Eportela99/WinToolkit_v2.0',
 }
 
-const isTouchDevice = () => window.matchMedia('(hover: none)').matches
-
-const tiltHandlers = {
-  onMouseMove(e) {
-    if (isTouchDevice()) return
-    const card = e.currentTarget
-    const rect = card.getBoundingClientRect()
-    const x = (e.clientX - rect.left) / rect.width - 0.5
-    const y = (e.clientY - rect.top) / rect.height - 0.5
-    card.style.transform = `perspective(900px) rotateY(${x * 7}deg) rotateX(${-y * 7}deg) translateY(-6px)`
-  },
-  onMouseLeave(e) {
-    e.currentTarget.style.transform = ''
-  },
-}
 
 const GitHubIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -53,7 +38,7 @@ export default function Projects() {
         </div>
 
         {/* ── WinToolkit ── */}
-        <div className="featured-project glass-card fade-in" {...tiltHandlers}>
+        <div className="featured-project glass-card fade-in">
           <div className="featured-info">
             <div className="featured-label">Featured Project</div>
             <h3 className="featured-title">{featured.title}</h3>
@@ -88,7 +73,7 @@ export default function Projects() {
         </div>
 
         {/* ── GitTree ── */}
-        <div className="featured-project featured-project-rev glass-card fade-in" {...tiltHandlers}>
+        <div className="featured-project featured-project-rev glass-card fade-in">
           <div className="featured-img-wrap">
             <img src={gitTreeImg} alt="GitTree screenshot" className="featured-img" />
           </div>
@@ -134,7 +119,7 @@ export default function Projects() {
         </div>
 
         {/* ── IT-DockTools ── */}
-        <div className="featured-project glass-card fade-in" {...tiltHandlers}>
+        <div className="featured-project glass-card fade-in">
           <div className="featured-info">
             <div className="featured-label">Featured Project</div>
             <h3 className="featured-title">IT-DockTools</h3>

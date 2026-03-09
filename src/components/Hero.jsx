@@ -141,7 +141,7 @@ export default function Hero() {
           <a href="#projects" className="btn-primary">
             <span>View My Work</span>
           </a>
-          <a href="/Resume-Enrique-Portela.html" target="_blank" rel="noreferrer" className="btn-outline">
+          <a href="/Resume-Enrique-Portela.pdf" target="_blank" rel="noreferrer" className="btn-outline">
             Download Resume
           </a>
         </div>

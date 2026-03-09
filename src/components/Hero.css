@@ -271,11 +271,8 @@
     order: -1;
   }
 
-  .scroll-indicator-mouse {
-    display: none;
-  }
-
+  .scroll-indicator-mouse,
   .scroll-indicator-phone {
-    display: flex;
+    display: none;
   }
 }

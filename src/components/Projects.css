@@ -194,9 +194,11 @@
 
   .featured-img-wrap {
     height: 220px;
+    background: #0d1117;
   }
 
   .featured-img {
+    object-fit: contain;
     object-position: center;
   }
 

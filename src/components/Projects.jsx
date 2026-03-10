@@ -161,7 +161,7 @@ export default function Projects() {
           </div>
 
           <div className="featured-img-wrap">
-            <img src={itDockToolsImg} alt="IT-DockTools screenshot" className="featured-img" />
+            <img src={itDockToolsImg} alt="IT-DockTools screenshot" className="featured-img featured-img--cover" />
           </div>
         </div>
 

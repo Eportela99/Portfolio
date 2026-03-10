@@ -38,6 +38,13 @@
   font-size: 0.9rem;
 }
 
+.contact-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.contact-link:hover { color: var(--accent-cyan); }
+
 .contact-icon {
   width: 36px;
   height: 36px;

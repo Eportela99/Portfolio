@@ -1,72 +1,48 @@
-import { useEffect, useRef } from 'react'
 import './Skills.css'
 import ollamaIcon from '../assets/ollama.png'
 import n8nIcon from '../assets/n8n-color.png'
 
 const INNER_SKILLS = [
-  { name: 'React',      icon: 'devicon-react-original colored' },
-  { name: 'TypeScript', icon: 'devicon-typescript-plain colored' },
-  { name: 'JavaScript', icon: 'devicon-javascript-plain colored' },
-  { name: 'Node.js',    icon: 'devicon-nodejs-plain colored' },
-  { name: 'Python',     icon: 'devicon-python-plain colored' },
-  { name: 'Go',         icon: 'devicon-go-plain colored' },
-  { name: 'Docker',     icon: 'devicon-docker-plain colored' },
-  { name: 'Linux',      icon: 'devicon-linux-plain colored' },
+  { name: 'React',      icon: 'devicon-react-original colored',   sub: 'Hooks · Vite · Router' },
+  { name: 'TypeScript', icon: 'devicon-typescript-plain colored', sub: 'Generics · Types' },
+  { name: 'JavaScript', icon: 'devicon-javascript-plain colored', sub: 'ES2024 · Async · DOM' },
+  { name: 'Node.js',    icon: 'devicon-nodejs-plain colored',     sub: 'Express · REST · npm' },
+  { name: 'Python',     icon: 'devicon-python-plain colored',     sub: 'Scripts · Automation' },
+  { name: 'Go',         icon: 'devicon-go-plain colored',         sub: 'Gin · REST · WebSockets' },
+  { name: 'Docker',     icon: 'devicon-docker-plain colored',     sub: 'Compose · Images' },
+  { name: 'Linux',      icon: 'devicon-linux-plain colored',      sub: 'Bash · Ubuntu' },
 ]
 
 const OUTER_SKILLS = [
-  { name: 'Azure',      icon: 'devicon-azure-plain colored' },
-  { name: 'Swift',      icon: 'devicon-swift-plain colored' },
-  { name: 'Java',       icon: 'devicon-java-plain colored' },
-  { name: 'PostgreSQL', icon: 'devicon-postgresql-plain colored' },
-  { name: 'Git',        icon: 'devicon-git-plain colored' },
-  { name: 'HTML',       icon: 'devicon-html5-plain colored' },
-  { name: 'CSS',        icon: 'devicon-css3-plain colored' },
-  { name: 'Blender',    icon: 'devicon-blender-original colored' },
-  { name: 'n8n',        img: n8nIcon },
-  { name: 'Ollama',     img: ollamaIcon },
+  { name: 'Azure',      icon: 'devicon-azure-plain colored',      sub: 'VMs · Active Directory' },
+  { name: 'Swift',      icon: 'devicon-swift-plain colored',      sub: 'SwiftUI · MVVM · iOS' },
+  { name: 'Java',       icon: 'devicon-java-plain colored',       sub: 'OOP · Spring' },
+  { name: 'PostgreSQL', icon: 'devicon-postgresql-plain colored', sub: 'CRUD · Migrations' },
+  { name: 'Git',        icon: 'devicon-git-plain colored',        sub: 'GitHub · CI/CD' },
+  { name: 'HTML',       icon: 'devicon-html5-plain colored',      sub: 'Semantic · A11y' },
+  { name: 'CSS',        icon: 'devicon-css3-plain colored',       sub: 'Flexbox · Grid' },
+  { name: 'Blender',    icon: 'devicon-blender-original colored', sub: '3D · Modeling' },
+  { name: 'n8n',        img: n8nIcon,                             sub: 'Automation · Workflows' },
+  { name: 'Ollama',     img: ollamaIcon,                          sub: 'Local AI · LLMs' },
 ]
 
-const INNER_R = 148
-const OUTER_R = 235
-const INNER_SPD = 0.00016
-const OUTER_SPD = 0.00009
+// Inner ring: evenly spaced, starting from top
+// Outer ring: offset by half a step so outer badges fill the gaps between inner ones
+function buildRing(skills, radius, angleOffset = 0) {
+  return skills.map((skill, i) => {
+    const angle = (i / skills.length) * Math.PI * 2 - Math.PI / 2 + angleOffset
+    return {
+      ...skill,
+      x: Math.cos(angle) * radius,
+      y: Math.sin(angle) * radius,
+    }
+  })
+}
+
+const innerItems = buildRing(INNER_SKILLS, 195)
+const outerItems = buildRing(OUTER_SKILLS, 330, Math.PI / OUTER_SKILLS.length)
 
 export default function Skills() {
-  const innerRefs = useRef([])
-  const outerRefs = useRef([])
-  const animRef = useRef(null)
-
-  useEffect(() => {
-    let start = null
-
-    const tick = (time) => {
-      if (!start) start = time
-      const elapsed = time - start
-
-      innerRefs.current.forEach((el, i) => {
-        if (!el) return
-        const angle = (i / INNER_SKILLS.length) * Math.PI * 2 + elapsed * INNER_SPD
-        const x = Math.cos(angle) * INNER_R
-        const y = Math.sin(angle) * INNER_R
-        el.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`
-      })
-
-      outerRefs.current.forEach((el, i) => {
-        if (!el) return
-        const angle = (i / OUTER_SKILLS.length) * Math.PI * 2 - elapsed * OUTER_SPD
-        const x = Math.cos(angle) * OUTER_R
-        const y = Math.sin(angle) * OUTER_R
-        el.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`
-      })
-
-      animRef.current = requestAnimationFrame(tick)
-    }
-
-    animRef.current = requestAnimationFrame(tick)
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
-  }, [])
-
   return (
     <section className="skills" id="skills">
       <div className="container">
@@ -76,46 +52,71 @@ export default function Skills() {
           <p className="section-subtitle">Technologies I work with</p>
         </div>
 
-        {/* Mobile grid — shown only on small screens via CSS */}
+        {/* Mobile grid */}
         <div className="sk-mobile-grid fade-in">
           {[...INNER_SKILLS, ...OUTER_SKILLS].map(skill => (
-            <div key={skill.name} className="sk-mobile-badge">
+            <div key={skill.name} className="sk-badge-card">
               {skill.icon
-                ? <i className={`${skill.icon} sk-orb-icon`} />
-                : <img src={skill.img} alt={skill.name} className="sk-orb-img" />
+                ? <i className={`${skill.icon} sk-badge-icon`} />
+                : <img src={skill.img} alt={skill.name} className="sk-badge-img" />
               }
-              <span className="sk-orb-name">{skill.name}</span>
+              <div className="sk-badge-info">
+                <span className="sk-badge-name">{skill.name}</span>
+                <span className="sk-badge-sub">{skill.sub}</span>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="sk-orbit-scene fade-in">
-          <div className="sk-track sk-track-inner" />
-          <div className="sk-track sk-track-outer" />
+        {/* Desktop scene */}
+        <div className="sk-scene fade-in">
 
+          {/* Center circle */}
           <div className="sk-center">
+            <div className="sk-center-pulse" />
             <span className="sk-center-code">&lt;/&gt;</span>
           </div>
 
-          {INNER_SKILLS.map((skill, i) => (
-            <div key={skill.name} className="sk-orb-item" ref={el => innerRefs.current[i] = el}>
-              {skill.icon
-                ? <i className={`${skill.icon} sk-orb-icon`} />
-                : <img src={skill.img} alt={skill.name} className="sk-orb-img" />
-              }
-              <span className="sk-orb-name">{skill.name}</span>
+          {/* Inner ring badges */}
+          {innerItems.map((skill, i) => (
+            <div
+              key={skill.name}
+              className="sk-anchor"
+              style={{ left: `calc(50% + ${skill.x}px)`, top: `calc(50% + ${skill.y}px)` }}
+            >
+              <div className="sk-badge-card" style={{ animationDelay: `${i * 0.42}s` }}>
+                {skill.icon
+                  ? <i className={`${skill.icon} sk-badge-icon`} />
+                  : <img src={skill.img} alt={skill.name} className="sk-badge-img" />
+                }
+                <div className="sk-badge-info">
+                  <span className="sk-badge-name">{skill.name}</span>
+                  <span className="sk-badge-sub">{skill.sub}</span>
+                </div>
+              </div>
             </div>
           ))}
 
-          {OUTER_SKILLS.map((skill, i) => (
-            <div key={skill.name} className="sk-orb-item" ref={el => outerRefs.current[i] = el}>
-              {skill.icon
-                ? <i className={`${skill.icon} sk-orb-icon`} />
-                : <img src={skill.img} alt={skill.name} className="sk-orb-img" />
-              }
-              <span className="sk-orb-name">{skill.name}</span>
+          {/* Outer ring badges */}
+          {outerItems.map((skill, i) => (
+            <div
+              key={skill.name}
+              className="sk-anchor"
+              style={{ left: `calc(50% + ${skill.x}px)`, top: `calc(50% + ${skill.y}px)` }}
+            >
+              <div className="sk-badge-card" style={{ animationDelay: `${(i + 3) * 0.38}s` }}>
+                {skill.icon
+                  ? <i className={`${skill.icon} sk-badge-icon`} />
+                  : <img src={skill.img} alt={skill.name} className="sk-badge-img" />
+                }
+                <div className="sk-badge-info">
+                  <span className="sk-badge-name">{skill.name}</span>
+                  <span className="sk-badge-sub">{skill.sub}</span>
+                </div>
+              </div>
             </div>
           ))}
+
         </div>
       </div>
     </section>

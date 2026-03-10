@@ -2,52 +2,33 @@
   background: var(--bg-primary);
 }
 
-/* ── Orbit scene ── */
-.sk-orbit-scene {
+/* ── Desktop scene ── */
+.sk-scene {
   position: relative;
-  width: 580px;
-  height: 580px;
+  width: 860px;
+  height: 860px;
   margin: 0 auto;
 }
 
-.sk-track {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.sk-track-inner {
-  width: 296px;
-  height: 296px;
-  border: 1px solid rgba(0, 212, 255, 0.15);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.05) inset;
-}
-
-.sk-track-outer {
-  width: 470px;
-  height: 470px;
-  border: 1px solid rgba(124, 58, 237, 0.15);
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.05) inset;
-}
-
-/* Center emblem */
+/* ── Center circle ── */
 .sk-center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 110px;
-  height: 110px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(0, 212, 255, 0.08), rgba(124, 58, 237, 0.12));
-  border: 2px solid rgba(0, 212, 255, 0.4);
+  background: radial-gradient(circle at center,
+    rgba(0, 212, 255, 0.1) 0%,
+    rgba(124, 58, 237, 0.15) 60%,
+    transparent 100%
+  );
+  border: 2px solid rgba(0, 212, 255, 0.5);
   box-shadow:
-    0 0 30px rgba(0, 212, 255, 0.25),
-    0 0 70px rgba(124, 58, 237, 0.15),
-    inset 0 0 20px rgba(0, 212, 255, 0.05);
+    0 0 40px rgba(0, 212, 255, 0.3),
+    0 0 80px rgba(124, 58, 237, 0.2),
+    inset 0 0 30px rgba(0, 212, 255, 0.07);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,99 +36,117 @@
   pointer-events: none;
 }
 
+/* Pulse ring behind center */
+.sk-center-pulse {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  animation: sk-pulse 3s ease-in-out infinite;
+}
+
+@keyframes sk-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.6; }
+  50%       { transform: scale(1.1); opacity: 0.15; }
+}
+
 .sk-center-code {
-  font-size: 1.6rem;
+  font-size: 2rem;
   font-weight: 800;
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1;
+  position: relative;
+  z-index: 1;
 }
 
-/* Orbit items */
-.sk-orb-item {
+/* ── Anchor: positions the card without interfering with float ── */
+.sk-anchor {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+/* ── Badge card ── */
+.sk-badge-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 5px;
-  background: rgba(255, 255, 255, 0.04);
+  gap: 0.55rem;
+  background: rgba(10, 15, 28, 0.88);
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 10px;
-  padding: 8px 12px;
+  padding: 0.48rem 0.8rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   white-space: nowrap;
-  backdrop-filter: blur(12px);
-  z-index: 5;
   cursor: default;
+  animation: sk-float 3.6s ease-in-out infinite;
   transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
-  min-width: 68px;
 }
 
-.sk-orb-item:hover {
-  border-color: rgba(0, 212, 255, 0.55);
-  box-shadow: 0 0 16px rgba(0, 212, 255, 0.25);
+.sk-badge-card:hover {
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.25), 0 4px 20px rgba(0, 0, 0, 0.4);
   background: rgba(0, 212, 255, 0.07);
+  animation-play-state: paused;
 }
 
-.sk-orb-icon {
-  font-size: 1.5rem;
+@keyframes sk-float {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-8px); }
+}
+
+.sk-badge-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
   transition: filter 0.3s;
 }
 
-.sk-orb-img {
-  width: 1.5rem;
-  height: 1.5rem;
+.sk-badge-img {
+  width: 1.4rem;
+  height: 1.4rem;
   object-fit: contain;
+  flex-shrink: 0;
+  transition: filter 0.3s;
 }
 
-.sk-orb-item:hover .sk-orb-icon,
-.sk-orb-item:hover .sk-orb-img {
-  filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.6));
+.sk-badge-card:hover .sk-badge-icon,
+.sk-badge-card:hover .sk-badge-img {
+  filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.65));
 }
 
-.sk-orb-name {
-  font-size: 0.68rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+.sk-badge-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
+.sk-badge-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.sk-badge-sub {
+  font-size: 0.6rem;
+  color: var(--accent-cyan);
+  opacity: 0.75;
+  line-height: 1.3;
+}
 
 /* ── Mobile grid ── */
 .sk-mobile-grid {
   display: none;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   padding: 0 0.5rem;
 }
 
-.sk-mobile-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  border-radius: 10px;
-  padding: 10px 14px;
-  min-width: 72px;
-}
-
-.sk-mobile-badge:hover {
-  border-color: rgba(0, 212, 255, 0.55);
-  background: rgba(0, 212, 255, 0.07);
-}
-
-/* ── Responsive ── */
-@media (max-width: 640px) {
-  .sk-orbit-scene {
-    display: none;
-  }
-
-  .sk-mobile-grid {
-    display: flex;
-  }
+@media (max-width: 900px) {
+  .sk-scene       { display: none; }
+  .sk-mobile-grid { display: flex; }
 }

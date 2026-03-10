@@ -193,7 +193,11 @@
   }
 
   .featured-img-wrap {
-    height: 200px;
+    height: 220px;
+  }
+
+  .featured-img {
+    object-position: center;
   }
 
   .featured-footer {

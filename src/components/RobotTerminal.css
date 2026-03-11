@@ -1,0 +1,356 @@
+/* ── Terminal shell ── */
+.robot-terminal {
+  width: 300px;
+  background: #060c18;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.08),
+    0 0 40px rgba(0, 212, 255, 0.18),
+    0 0 80px rgba(124, 58, 237, 0.12),
+    0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  /* Start hidden */
+  opacity: 0;
+  transform: scale(0.85) translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+.rt-phase-1,
+.rt-phase-2,
+.rt-phase-3 {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ── Title bar ── */
+.rt-titlebar {
+  background: #0a1525;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.12);
+}
+
+.rt-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.rt-dot-red    { background: #ff5f57; box-shadow: 0 0 6px rgba(255,95,87,0.5); }
+.rt-dot-yellow { background: #febc2e; box-shadow: 0 0 6px rgba(254,188,46,0.4); }
+.rt-dot-green  { background: #28c840; box-shadow: 0 0 6px rgba(40,200,64,0.4); }
+
+.rt-title-text {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: rgba(0, 212, 255, 0.5);
+  margin-left: 6px;
+  flex: 1;
+  text-align: center;
+}
+
+.rt-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #28c840;
+  box-shadow: 0 0 8px rgba(40,200,64,0.8);
+  animation: rt-status-pulse 2s ease-in-out infinite;
+}
+@keyframes rt-status-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── Screen ── */
+.rt-screen {
+  position: relative;
+  padding: 22px 20px 26px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* CRT scanlines */
+.rt-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.06) 3px,
+    rgba(0, 0, 0, 0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Subtle CRT flicker */
+.rt-flicker {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 212, 255, 0.015);
+  pointer-events: none;
+  z-index: 19;
+  animation: rt-flicker 6s linear infinite;
+}
+@keyframes rt-flicker {
+  0%, 100%        { opacity: 1; }
+  47%             { opacity: 1; }
+  48%             { opacity: 0.6; }
+  48.5%           { opacity: 1; }
+  92%             { opacity: 1; }
+  92.5%           { opacity: 0.7; }
+  93%             { opacity: 1; }
+}
+
+/* ── Boot text ── */
+.rt-boot-text {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  right: 18px;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.68rem;
+  line-height: 1.8;
+  color: #00d4ff;
+  z-index: 10;
+  transition: opacity 0.4s ease 0.1s;
+}
+
+.rt-phase-2 .rt-boot-text,
+.rt-phase-3 .rt-boot-text {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rt-boot-line {
+  opacity: 0;
+  animation: rt-line-in 0.25s ease forwards;
+}
+.rt-boot-line:last-child { color: #28c840; font-weight: 600; }
+
+@keyframes rt-line-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Corner decorations ── */
+.rt-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(0, 212, 255, 0.3);
+  border-style: solid;
+  z-index: 15;
+}
+.rt-corner-tl { top: 8px;    left: 8px;    border-width: 1px 0 0 1px; }
+.rt-corner-tr { top: 8px;    right: 8px;   border-width: 1px 1px 0 0; }
+.rt-corner-bl { bottom: 8px; left: 8px;    border-width: 0 0 1px 1px; }
+.rt-corner-br { bottom: 8px; right: 8px;   border-width: 0 1px 1px 0; }
+
+/* ── Face ── */
+.rt-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.3, 0.64, 1);
+  z-index: 10;
+  position: relative;
+}
+
+.rt-phase-2 .rt-face,
+.rt-phase-3 .rt-face {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Eyes container ── */
+.rt-eyes {
+  display: flex;
+  gap: 28px;
+  --px: 0px;
+  --py: 0px;
+}
+
+/* ── Single eye ── */
+.rt-eye {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #071525, #030810);
+  border: 2px solid rgba(0, 212, 255, 0.6);
+  box-shadow:
+    0 0 20px rgba(0, 212, 255, 0.35),
+    0 0 50px rgba(0, 212, 255, 0.12),
+    inset 0 0 20px rgba(0, 212, 255, 0.06);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* Start closed */
+  transform: scaleY(0);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: rt-eye-glow 3s ease-in-out infinite;
+}
+
+.rt-eye-right {
+  transition-delay: 0.08s;
+  animation-delay: 0.4s;
+}
+
+@keyframes rt-eye-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.35), 0 0 50px rgba(0,212,255,0.12), inset 0 0 20px rgba(0,212,255,0.06); }
+  50%       { box-shadow: 0 0 28px rgba(0,212,255,0.5),  0 0 70px rgba(0,212,255,0.18), inset 0 0 26px rgba(0,212,255,0.1);  }
+}
+
+.rt-phase-2 .rt-eye,
+.rt-phase-3 .rt-eye {
+  transform: scaleY(1);
+}
+
+/* Blink — apply class via JS */
+.rt-blink {
+  transform: scaleY(0.06) !important;
+  transition: transform 0.08s ease !important;
+}
+
+/* ── Iris ── */
+.rt-iris {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%,
+    rgba(0, 212, 255, 0.25),
+    rgba(0, 80, 160, 0.4),
+    #030810
+  );
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform: translate(var(--px), var(--py));
+  transition: transform 0.45s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+/* ── Pupil ── */
+.rt-pupil {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #010408;
+  position: relative;
+  z-index: 1;
+}
+
+.rt-pupil-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,255,0.15), transparent 70%);
+  animation: rt-pupil-pulse 2s ease-in-out infinite;
+}
+@keyframes rt-pupil-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+/* ── Eye ring (decorative outer ring) ── */
+.rt-eye-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 212, 255, 0.15);
+  animation: rt-ring-spin 8s linear infinite;
+  pointer-events: none;
+}
+.rt-eye-right .rt-eye-ring {
+  animation-direction: reverse;
+  animation-duration: 11s;
+}
+@keyframes rt-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Shine spots ── */
+.rt-shine {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+.rt-shine-1 { width: 10px; height: 10px; top: 12px; right: 15px; }
+.rt-shine-2 { width:  5px; height:  5px; top: 22px; right: 13px; opacity: 0.5; }
+
+/* ── Mouth ── */
+.rt-mouth {
+  width: 140px;
+  height: 6px;
+  background: rgba(0, 212, 255, 0.07);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.rt-phase-3 .rt-mouth { opacity: 1; }
+
+.rt-mouth-scan {
+  position: absolute;
+  left: -40%;
+  top: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  animation: rt-scan 2.2s ease-in-out infinite;
+}
+@keyframes rt-scan {
+  0%   { left: -40%; }
+  100% { left: 110%; }
+}
+
+.rt-mouth-label {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.55rem;
+  color: rgba(0, 212, 255, 0.4);
+  white-space: nowrap;
+  letter-spacing: 0.08em;
+  animation: rt-label-blink 2.2s ease-in-out infinite;
+}
+@keyframes rt-label-blink {
+  0%, 45%, 55%, 100% { opacity: 0.4; }
+  50%                { opacity: 0.9; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .robot-terminal { width: 260px; }
+  .rt-eye         { width: 64px; height: 64px; }
+  .rt-iris        { width: 30px; height: 30px; }
+  .rt-pupil       { width: 13px; height: 13px; }
+  .rt-eyes        { gap: 22px; }
+  .rt-mouth       { width: 120px; }
+  .rt-screen      { min-height: 240px; padding: 18px 16px 22px; }
+}

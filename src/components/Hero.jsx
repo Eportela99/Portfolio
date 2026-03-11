@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './Hero.css'
-import profileImg from '../assets/Profile-Updated.png'
+import RobotTerminal from './RobotTerminal'
 
 const roles = [
   'Full Stack Developer',
@@ -147,9 +147,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="hero-photo">
-        <img src={profileImg} alt="Enrique L. Portela" />
-      </div>
+      <RobotTerminal />
 
       {/* Desktop: mouse icon */}
       <div className="scroll-indicator scroll-indicator-mouse">

@@ -55,6 +55,19 @@
   text-align: center;
 }
 
+.rt-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  margin-left: 2px;
+  transition: color 0.2s;
+}
+.rt-close:hover { color: #ff5f57; }
+
 .rt-status-dot {
   width: 6px;
   height: 6px;
@@ -298,50 +311,46 @@
 .rt-shine-1 { width: 10px; height: 10px; top: 12px; right: 15px; }
 .rt-shine-2 { width:  5px; height:  5px; top: 22px; right: 13px; opacity: 0.5; }
 
-/* ── Mouth ── */
+/* ── Mouth — equalizer bars ── */
 .rt-mouth {
-  width: 140px;
-  height: 6px;
-  background: rgba(0, 212, 255, 0.07);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  height: 22px;
   opacity: 0;
   transition: opacity 0.4s ease;
 }
 
 .rt-phase-3 .rt-mouth { opacity: 1; }
 
-.rt-mouth-scan {
-  position: absolute;
-  left: -40%;
-  top: 0;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-  animation: rt-scan 2.2s ease-in-out infinite;
-}
-@keyframes rt-scan {
-  0%   { left: -40%; }
-  100% { left: 110%; }
+.rt-bar {
+  width: 4px;
+  height: 4px;
+  background: var(--accent-cyan);
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(0, 212, 255, 0.5);
+  transition: height 0.08s ease;
 }
 
-.rt-mouth-label {
-  position: absolute;
-  bottom: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Fira Code', monospace;
-  font-size: 0.55rem;
-  color: rgba(0, 212, 255, 0.4);
-  white-space: nowrap;
-  letter-spacing: 0.08em;
-  animation: rt-label-blink 2.2s ease-in-out infinite;
+/* Idle: small gentle pulse */
+.rt-phase-3 .rt-mouth:not(.rt-talking) .rt-bar {
+  animation: rt-idle-bar 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.18s);
 }
-@keyframes rt-label-blink {
-  0%, 45%, 55%, 100% { opacity: 0.4; }
-  50%                { opacity: 0.9; }
+@keyframes rt-idle-bar {
+  0%, 100% { height: 4px; }
+  50%       { height: 7px; }
+}
+
+/* Talking: fast equalizer */
+.rt-talking .rt-bar {
+  animation: rt-talk-bar calc(0.22s + var(--i) * 0.025s) ease-in-out infinite alternate !important;
+  animation-delay: calc(var(--i) * 0.04s) !important;
+}
+@keyframes rt-talk-bar {
+  from { height: 4px;                              }
+  to   { height: calc(8px + var(--i, 3) * 3.5px); }
 }
 
 /* ── Mobile ── */

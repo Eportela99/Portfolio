@@ -8,53 +8,48 @@ const BOOT_LINES = [
   '> STATUS: ONLINE',
 ]
 
-export default function RobotTerminal() {
-  const [phase, setPhase]       = useState(0) // 0=hidden 1=booting 2=eyes-open 3=alive
+export default function RobotTerminal({ talking = false, onClose }) {
+  const [phase,     setPhase]     = useState(0)
   const [bootLines, setBootLines] = useState([])
-  const [blinking, setBlinking]   = useState(false)
-  const eyesRef   = useRef(null)
-  const blinkRef  = useRef(null)
-  const lookRef   = useRef(null)
+  const [blinking,  setBlinking]  = useState(false)
+  const eyesRef  = useRef(null)
+  const blinkRef = useRef(null)
+  const lookRef  = useRef(null)
 
-  // ── Boot sequence ──────────────────────────────────────────────
+  // Boot sequence
   useEffect(() => {
     const t = [
       setTimeout(() => setPhase(1), 300),
-      setTimeout(() => setBootLines([BOOT_LINES[0]]),  700),
-      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[1]]), 1300),
-      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[2]]), 1850),
-      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[3]]), 2350),
-      setTimeout(() => setPhase(2), 2750),
-      setTimeout(() => setPhase(3), 3350),
+      setTimeout(() => setBootLines([BOOT_LINES[0]]),                        700),
+      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[1]]),            1300),
+      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[2]]),            1850),
+      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[3]]),            2350),
+      setTimeout(() => setPhase(2),                                          2750),
+      setTimeout(() => setPhase(3),                                          3350),
     ]
     return () => t.forEach(clearTimeout)
   }, [])
 
-  // ── Look around (random recursive setTimeout) ──────────────────
+  // Look around
   useEffect(() => {
     if (phase < 3) return
     const look = () => {
       if (!eyesRef.current) return
-      const x = (Math.random() - 0.5) * 16
-      const y = (Math.random() - 0.5) * 10
-      eyesRef.current.style.setProperty('--px', `${x}px`)
-      eyesRef.current.style.setProperty('--py', `${y}px`)
+      eyesRef.current.style.setProperty('--px', `${(Math.random() - 0.5) * 16}px`)
+      eyesRef.current.style.setProperty('--py', `${(Math.random() - 0.5) * 10}px`)
       lookRef.current = setTimeout(look, 1400 + Math.random() * 2200)
     }
     lookRef.current = setTimeout(look, 600)
     return () => clearTimeout(lookRef.current)
   }, [phase])
 
-  // ── Random blink ───────────────────────────────────────────────
+  // Random blink
   useEffect(() => {
     if (phase < 3) return
     const scheduleBlink = () => {
       blinkRef.current = setTimeout(() => {
         setBlinking(true)
-        setTimeout(() => {
-          setBlinking(false)
-          scheduleBlink()
-        }, 160)
+        setTimeout(() => { setBlinking(false); scheduleBlink() }, 160)
       }, 2500 + Math.random() * 3000)
     }
     scheduleBlink()
@@ -71,6 +66,9 @@ export default function RobotTerminal() {
         <span className="rt-dot rt-dot-green"  />
         <span className="rt-title-text">system.exe</span>
         <span className="rt-status-dot" />
+        {onClose && (
+          <button className="rt-close" onClick={onClose} aria-label="Close">✕</button>
+        )}
       </div>
 
       {/* Screen */}
@@ -93,10 +91,7 @@ export default function RobotTerminal() {
           {/* Eyes */}
           <div className="rt-eyes" ref={eyesRef}>
             {['left', 'right'].map((side) => (
-              <div
-                key={side}
-                className={`rt-eye rt-eye-${side}${blinking ? ' rt-blink' : ''}`}
-              >
+              <div key={side} className={`rt-eye rt-eye-${side}${blinking ? ' rt-blink' : ''}`}>
                 <div className="rt-iris">
                   <div className="rt-pupil" />
                   <div className="rt-pupil-glow" />
@@ -108,10 +103,11 @@ export default function RobotTerminal() {
             ))}
           </div>
 
-          {/* Mouth — scanning bar */}
-          <div className="rt-mouth">
-            <div className="rt-mouth-scan" />
-            <span className="rt-mouth-label">scanning...</span>
+          {/* Mouth — equalizer bars */}
+          <div className={`rt-mouth${talking ? ' rt-talking' : ''}`}>
+            {[...Array(7)].map((_, i) => (
+              <div key={i} className="rt-bar" style={{ '--i': i }} />
+            ))}
           </div>
 
         </div>

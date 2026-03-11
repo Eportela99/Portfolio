@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './Hero.css'
-import RobotTerminal from './RobotTerminal'
+import RobotScene from './RobotScene'
 
 const roles = [
   'Full Stack Developer',
@@ -147,7 +147,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <RobotTerminal />
+      <RobotScene />
 
       {/* Desktop: mouse icon */}
       <div className="scroll-indicator scroll-indicator-mouse">

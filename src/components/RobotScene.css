@@ -1,0 +1,15 @@
+.robot-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .robot-scene {
+    align-items: center;
+  }
+}

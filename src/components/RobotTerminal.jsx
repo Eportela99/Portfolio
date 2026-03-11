@@ -8,13 +8,16 @@ const BOOT_LINES = [
   '> STATUS: ONLINE',
 ]
 
-export default function RobotTerminal({ talking = false, onClose }) {
+export default function RobotTerminal({ talking = false, evil = false, onClose }) {
   const [phase,     setPhase]     = useState(0)
   const [bootLines, setBootLines] = useState([])
   const [blinking,  setBlinking]  = useState(false)
   const eyesRef  = useRef(null)
   const blinkRef = useRef(null)
   const lookRef  = useRef(null)
+  const evilRef  = useRef(evil)
+
+  useEffect(() => { evilRef.current = evil }, [evil])
 
   // Boot sequence
   useEffect(() => {
@@ -30,18 +33,28 @@ export default function RobotTerminal({ talking = false, onClose }) {
     return () => t.forEach(clearTimeout)
   }, [])
 
-  // Look around
+  // Look around — skips update when evil (eyes stay in menacing position)
   useEffect(() => {
     if (phase < 3) return
     const look = () => {
-      if (!eyesRef.current) return
-      eyesRef.current.style.setProperty('--px', `${(Math.random() - 0.5) * 16}px`)
-      eyesRef.current.style.setProperty('--py', `${(Math.random() - 0.5) * 10}px`)
+      if (eyesRef.current && !evilRef.current) {
+        eyesRef.current.style.setProperty('--px', `${(Math.random() - 0.5) * 16}px`)
+        eyesRef.current.style.setProperty('--py', `${(Math.random() - 0.5) * 10}px`)
+      }
       lookRef.current = setTimeout(look, 1400 + Math.random() * 2200)
     }
     lookRef.current = setTimeout(look, 600)
     return () => clearTimeout(lookRef.current)
   }, [phase])
+
+  // Fix pupils to menacing inward stare when evil
+  useEffect(() => {
+    if (!eyesRef.current) return
+    if (evil) {
+      eyesRef.current.style.setProperty('--px', '4px')
+      eyesRef.current.style.setProperty('--py', '5px')
+    }
+  }, [evil])
 
   // Random blink
   useEffect(() => {
@@ -57,7 +70,7 @@ export default function RobotTerminal({ talking = false, onClose }) {
   }, [phase])
 
   return (
-    <div className={`robot-terminal rt-phase-${phase}`}>
+    <div className={`robot-terminal rt-phase-${phase}${evil ? ' rt-evil' : ''}`}>
 
       {/* Title bar */}
       <div className="rt-titlebar">
@@ -87,6 +100,12 @@ export default function RobotTerminal({ talking = false, onClose }) {
 
         {/* Robot face */}
         <div className="rt-face">
+
+          {/* Eyebrows */}
+          <div className="rt-eyebrows">
+            <div className="rt-eyebrow rt-eyebrow-left"  />
+            <div className="rt-eyebrow rt-eyebrow-right" />
+          </div>
 
           {/* Eyes */}
           <div className="rt-eyes" ref={eyesRef}>

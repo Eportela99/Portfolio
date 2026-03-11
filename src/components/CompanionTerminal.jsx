@@ -37,6 +37,12 @@ const CompanionTerminal = forwardRef(function CompanionTerminal({ onClose, onTyp
     runningRef.current = true
     const item = queueRef.current.shift()
 
+    if (item.__cb) {
+      item.__cb()
+      timeoutRef.current = setTimeout(processNext, 0)
+      return
+    }
+
     if (!item.text) {
       onTypingRef.current(false)
       setLines(prev => [...prev, ''])
@@ -73,8 +79,10 @@ const CompanionTerminal = forwardRef(function CompanionTerminal({ onClose, onTyp
   }, [lines, current])
 
   useImperativeHandle(ref, () => ({
-    appendLines(newLines) {
+    appendLines(newLines, { onStart, onEnd } = {}) {
+      if (onStart) queueRef.current.push({ __cb: onStart })
       newLines.forEach(text => queueRef.current.push({ text, speed: 48, pause: 350 }))
+      if (onEnd)   queueRef.current.push({ __cb: onEnd })
       if (!runningRef.current) {
         timeoutRef.current = setTimeout(processNext, 400)
       }

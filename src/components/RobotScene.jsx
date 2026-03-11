@@ -4,9 +4,10 @@ import CompanionTerminal from './CompanionTerminal'
 import './RobotScene.css'
 
 export default function RobotScene() {
-  const [robotVisible,   setRobotVisible]   = useState(true)
-  const [companionOpen,  setCompanionOpen]  = useState(false)
-  const [talking,        setTalking]        = useState(false)
+  const [robotVisible,  setRobotVisible]  = useState(true)
+  const [companionOpen, setCompanionOpen] = useState(false)
+  const [talking,       setTalking]       = useState(false)
+  const [evil,          setEvil]          = useState(false)
   const companionRef = useRef(null)
 
   // Open companion after robot finishes booting
@@ -19,20 +20,31 @@ export default function RobotScene() {
     setRobotVisible(false)
     setTimeout(() => {
       setRobotVisible(true)
-      // Taunt the user
-      const lines = [
-        '',
-        'EN-01: Did you just try',
-        'to close me? 😈',
-        "You can't get rid of me",
-        'that easily.',
-      ]
+
+      const sendTaunt = () => {
+        companionRef.current?.appendLines(
+          [
+            '',
+            'Did you just try to',
+            "close me? 😈",
+            "You can't get rid of",
+            'me that easily.',
+          ],
+          {
+            onStart: () => setEvil(true),
+            onEnd:   () => {
+              // Let the evil face linger a moment before going back to normal
+              setTimeout(() => setEvil(false), 1500)
+            },
+          }
+        )
+      }
+
       if (companionRef.current) {
-        companionRef.current.appendLines(lines)
+        sendTaunt()
       } else {
         setCompanionOpen(true)
-        // Companion will open fresh; appendLines after a tick
-        setTimeout(() => companionRef.current?.appendLines(lines), 500)
+        setTimeout(sendTaunt, 500)
       }
     }, 700)
   }
@@ -42,6 +54,7 @@ export default function RobotScene() {
       {robotVisible && (
         <RobotTerminal
           talking={talking}
+          evil={evil}
           onClose={handleCloseRobot}
         />
       )}

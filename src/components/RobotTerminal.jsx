@@ -33,15 +33,16 @@ const RobotTerminal = forwardRef(function RobotTerminal({ onClose }, ref) {
   const [currentCls,  setCurrentCls]  = useState('')
   const [termVisible, setTermVisible] = useState(false)
 
-  const eyesRef    = useRef(null)
-  const blinkRef   = useRef(null)
-  const lookRef    = useRef(null)
-  const evilRef    = useRef(false)
-  const talkingRef = useRef(false)
-  const queueRef   = useRef([...INTRO])
-  const timeoutRef = useRef(null)
-  const runningRef = useRef(false)
-  const bodyRef    = useRef(null)
+  const eyesRef       = useRef(null)
+  const blinkRef      = useRef(null)
+  const lookRef       = useRef(null)
+  const evilRef       = useRef(false)
+  const talkingRef    = useRef(false)
+  const mouseActiveRef = useRef(false)
+  const queueRef      = useRef([...INTRO])
+  const timeoutRef    = useRef(null)
+  const runningRef    = useRef(false)
+  const bodyRef       = useRef(null)
 
   useEffect(() => { evilRef.current   = evil    }, [evil])
   useEffect(() => { talkingRef.current = talking }, [talking])
@@ -61,11 +62,11 @@ const RobotTerminal = forwardRef(function RobotTerminal({ onClose }, ref) {
     return () => t.forEach(clearTimeout)
   }, [])
 
-  // ── Look around ────────────────────────────────────
+  // ── Look around (idle, no mouse) ───────────────────
   useEffect(() => {
     if (phase < 3) return
     const look = () => {
-      if (eyesRef.current && !evilRef.current && !talkingRef.current) {
+      if (eyesRef.current && !evilRef.current && !talkingRef.current && !mouseActiveRef.current) {
         eyesRef.current.style.setProperty('--px', `${(Math.random() - 0.5) * 18}px`)
         eyesRef.current.style.setProperty('--py', `${(Math.random() - 0.5) * 12}px`)
       }
@@ -73,6 +74,35 @@ const RobotTerminal = forwardRef(function RobotTerminal({ onClose }, ref) {
     }
     lookRef.current = setTimeout(look, 600)
     return () => clearTimeout(lookRef.current)
+  }, [phase])
+
+  // ── Mouse tracking (desktop only) ──────────────────
+  useEffect(() => {
+    if (phase < 3) return
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
+    const onMove = (e) => {
+      mouseActiveRef.current = true
+      if (!eyesRef.current || evilRef.current || talkingRef.current) return
+      const rect = eyesRef.current.getBoundingClientRect()
+      const cx = rect.left + rect.width  / 2
+      const cy = rect.top  + rect.height / 2
+      const dx = e.clientX - cx
+      const dy = e.clientY - cy
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1
+      const factor = Math.min(dist / 280, 1)
+      eyesRef.current.style.setProperty('--px', `${(dx / dist) * factor * 9}px`)
+      eyesRef.current.style.setProperty('--py', `${(dy / dist) * factor * 9}px`)
+    }
+
+    const onLeave = () => { mouseActiveRef.current = false }
+
+    window.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseleave', onLeave)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseleave', onLeave)
+    }
   }, [phase])
 
   // ── Eyes look down when typing, fixed stare when evil ──

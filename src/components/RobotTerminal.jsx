@@ -23,23 +23,23 @@ export default function RobotTerminal({ talking = false, evil = false, onClose }
   useEffect(() => {
     const t = [
       setTimeout(() => setPhase(1), 300),
-      setTimeout(() => setBootLines([BOOT_LINES[0]]),                        700),
-      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[1]]),            1300),
-      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[2]]),            1850),
-      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[3]]),            2350),
-      setTimeout(() => setPhase(2),                                          2750),
-      setTimeout(() => setPhase(3),                                          3350),
+      setTimeout(() => setBootLines([BOOT_LINES[0]]),                     700),
+      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[1]]),         1300),
+      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[2]]),         1850),
+      setTimeout(() => setBootLines(l => [...l, BOOT_LINES[3]]),         2350),
+      setTimeout(() => setPhase(2),                                       2750),
+      setTimeout(() => setPhase(3),                                       3350),
     ]
     return () => t.forEach(clearTimeout)
   }, [])
 
-  // Look around — skips update when evil (eyes stay in menacing position)
+  // Look around — moves iris via CSS variables on container
   useEffect(() => {
     if (phase < 3) return
     const look = () => {
       if (eyesRef.current && !evilRef.current) {
-        eyesRef.current.style.setProperty('--px', `${(Math.random() - 0.5) * 16}px`)
-        eyesRef.current.style.setProperty('--py', `${(Math.random() - 0.5) * 10}px`)
+        eyesRef.current.style.setProperty('--px', `${(Math.random() - 0.5) * 18}px`)
+        eyesRef.current.style.setProperty('--py', `${(Math.random() - 0.5) * 12}px`)
       }
       lookRef.current = setTimeout(look, 1400 + Math.random() * 2200)
     }
@@ -47,22 +47,29 @@ export default function RobotTerminal({ talking = false, evil = false, onClose }
     return () => clearTimeout(lookRef.current)
   }, [phase])
 
-  // Fix pupils to menacing inward stare when evil
+  // Fix stare when evil
   useEffect(() => {
     if (!eyesRef.current) return
     if (evil) {
-      eyesRef.current.style.setProperty('--px', '4px')
-      eyesRef.current.style.setProperty('--py', '5px')
+      eyesRef.current.style.setProperty('--px', '5px')
+      eyesRef.current.style.setProperty('--py', '6px')
     }
   }, [evil])
 
-  // Random blink
+  // Blink
   useEffect(() => {
     if (phase < 3) return
     const scheduleBlink = () => {
       blinkRef.current = setTimeout(() => {
-        setBlinking(true)
-        setTimeout(() => { setBlinking(false); scheduleBlink() }, 160)
+        if (!evilRef.current) {
+          setBlinking(true)
+          setTimeout(() => {
+            setBlinking(false)
+            scheduleBlink()
+          }, 140)
+        } else {
+          scheduleBlink()
+        }
       }, 2500 + Math.random() * 3000)
     }
     scheduleBlink()
@@ -101,29 +108,25 @@ export default function RobotTerminal({ talking = false, evil = false, onClose }
         {/* Robot face */}
         <div className="rt-face">
 
-          {/* Eyebrows */}
-          <div className="rt-eyebrows">
-            <div className="rt-eyebrow rt-eyebrow-left"  />
-            <div className="rt-eyebrow rt-eyebrow-right" />
-          </div>
-
           {/* Eyes */}
           <div className="rt-eyes" ref={eyesRef}>
             {['left', 'right'].map((side) => (
               <div key={side} className={`rt-eye rt-eye-${side}${blinking ? ' rt-blink' : ''}`}>
+                <div className="rt-eye-ring" />
                 <div className="rt-iris">
-                  <div className="rt-pupil" />
-                  <div className="rt-pupil-glow" />
+                  <div className="rt-pupil">
+                    <div className="rt-pupil-glow" />
+                  </div>
                 </div>
                 <div className="rt-shine rt-shine-1" />
                 <div className="rt-shine rt-shine-2" />
-                <div className="rt-eye-ring" />
               </div>
             ))}
           </div>
 
-          {/* Mouth — equalizer bars */}
+          {/* Mouth — smile idle / equalizer talking */}
           <div className={`rt-mouth${talking ? ' rt-talking' : ''}`}>
+            <div className="rt-smile" />
             {[...Array(7)].map((_, i) => (
               <div key={i} className="rt-bar" style={{ '--i': i }} />
             ))}

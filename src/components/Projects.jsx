@@ -2,6 +2,7 @@ import './Projects.css'
 import winToolkitImg from '../assets/WinToolkit.png'
 import gitTreeImg from '../assets/GitTree.png'
 import itDockToolsImg from '../assets/IT-DockTools.png'
+import HomelabDemo from './HomelabDemo'
 
 const featured = {
   title: 'WinToolkit v2.0',
@@ -162,6 +163,48 @@ export default function Projects() {
 
           <div className="featured-img-wrap">
             <img src={itDockToolsImg} alt="IT-DockTools screenshot" className="featured-img featured-img--cover" />
+          </div>
+        </div>
+
+        {/* ── Homelab ── */}
+        <div className="featured-project featured-project-rev glass-card fade-in">
+          <div className="featured-img-wrap">
+            <HomelabDemo />
+          </div>
+
+          <div className="featured-info">
+            <div className="featured-label">Featured Project</div>
+            <h3 className="featured-title">Homelab</h3>
+            <p className="featured-subtitle">Self-Hosted Infrastructure on Windows Server 2025</p>
+            <p className="featured-description">
+              A production-grade homelab running on Windows Server 2025 with Hyper-V virtualization.
+              Hosts a Docker Lab VM running 10+ self-hosted services for storage, monitoring,
+              media, networking, and observability — all managed remotely via RDP and Tailscale.
+            </p>
+
+            <ul className="featured-highlights">
+              {[
+                'WDS server for PXE-boot OS deployment across all trial Windows versions',
+                'Macrium Reflect network backup images for bare-metal restores',
+                'Hyper-V VM running Ubuntu Server with Docker Compose stack',
+                'Full observability stack: Prometheus + Loki + Grafana dashboards',
+                'Pi-Hole DNS sinkhole blocking ads network-wide on all devices',
+                'Remote access anywhere via Tailscale WireGuard mesh VPN',
+              ].map(h => (
+                <li key={h}>
+                  <span className="highlight-dot" />
+                  {h}
+                </li>
+              ))}
+            </ul>
+
+            <div className="featured-footer">
+              <div className="project-tags">
+                {['Windows Server 2025', 'Hyper-V', 'Docker', 'Proxmox', 'Self-Hosted'].map(tag => (
+                  <span key={tag} className="project-tag">{tag}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

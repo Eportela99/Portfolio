@@ -158,11 +158,11 @@ function RDPWindow({ onClose }) {
 
 // ── VM definitions ─────────────────────────────────────────────
 const VMS = [
-  { id: 'docker',       name: 'Docker Lab',           sub: 'Ubuntu Server · Docker & Compose',          status: 'running' },
-  { id: 'ad',           name: 'Active Directory Lab',  sub: 'Windows Server 2022 · Domain Controller',   status: 'running' },
-  { id: 'win11personal',name: 'Win11 Personal',        sub: 'Windows 11 Pro · Personal Setup',           status: 'saved'   },
-  { id: 'win11client',  name: 'Win11 Client',          sub: 'Windows 11 Pro · Clean Enterprise Image',   status: 'off'     },
-  { id: 'n8n',          name: 'n8n Lab',               sub: 'Ubuntu Server · Automation Workflows',      status: 'running' },
+  { id: 'docker',       name: 'Docker Lab',           sub: 'Ubuntu · Docker & Compose',     status: 'running' },
+  { id: 'ad',           name: 'Active Directory Lab',  sub: 'Win Server 2022 · AD DC',       status: 'running' },
+  { id: 'win11personal',name: 'Win11 Personal',        sub: 'Windows 11 Pro · Personal',     status: 'saved'   },
+  { id: 'win11client',  name: 'Win11 Client',          sub: 'Windows 11 Pro · Gold Master',  status: 'off'     },
+  { id: 'n8n',          name: 'n8n Lab',               sub: 'Ubuntu · Automation',           status: 'running' },
 ]
 
 const STATUS_COLORS = { running: '#69f0ae', saved: '#f9a825', off: '#90a4ae' }

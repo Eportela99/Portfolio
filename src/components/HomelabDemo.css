@@ -161,7 +161,7 @@
 
 .hl-win-body {
   padding: 12px 14px 14px;
-  max-height: 260px;
+  max-height: 300px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.1) transparent;
@@ -237,22 +237,22 @@
 .hl-vm-card {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-radius: 6px;
+  padding: 6px 10px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
 }
 .hl-vm-card:hover {
   background: rgba(255,255,255,0.08);
   border-color: rgba(100,160,255,0.35);
 }
-.hl-vm-status { display: flex; align-items: center; gap: 6px; font-size: 0.62rem; color: #69f0ae; }
-.hl-vm-name   { font-size: 0.85rem; font-weight: 700; color: #fff; }
-.hl-vm-sub    { font-size: 0.65rem; color: rgba(180,195,220,0.7); }
-.hl-vm-arrow  { font-size: 0.62rem; color: rgba(100,160,255,0.8); margin-top: 4px; }
+.hl-vm-status { display: flex; align-items: center; gap: 5px; font-size: 0.58rem; color: #69f0ae; }
+.hl-vm-name   { font-size: 0.72rem; font-weight: 700; color: #fff; line-height: 1.3; }
+.hl-vm-sub    { font-size: 0.6rem; color: rgba(180,195,220,0.6); line-height: 1.2; }
+.hl-vm-arrow  { font-size: 0.58rem; color: rgba(100,160,255,0.8); margin-top: 2px; }
 
 /* ── VM list ── */
 .hl-vm-list {

@@ -254,6 +254,13 @@
 .hl-vm-sub    { font-size: 0.65rem; color: rgba(180,195,220,0.7); }
 .hl-vm-arrow  { font-size: 0.62rem; color: rgba(100,160,255,0.8); margin-top: 4px; }
 
+/* ── VM list ── */
+.hl-vm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 /* ── Back button ── */
 .hl-back-btn {
   background: none;
@@ -380,4 +387,106 @@
   font-size: 0.62rem;
   color: rgba(255,255,255,0.7);
   flex-shrink: 0;
+}
+
+/* ── AD Domain Chart ── */
+.hl-ad-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 4px 0;
+}
+
+.hl-ad-forest {
+  background: rgba(100,200,100,0.08);
+  border: 1px solid rgba(100,200,100,0.3);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+.hl-ad-forest-label {
+  font-size: 0.62rem;
+  color: #69f0ae;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.hl-ad-connector-v {
+  width: 1px;
+  height: 10px;
+  background: rgba(255,255,255,0.2);
+}
+
+.hl-ad-domain-row {
+  display: flex;
+  justify-content: center;
+}
+
+.hl-ad-dc-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.hl-ad-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hl-ad-connector-h {
+  width: 1px;
+  height: 10px;
+  background: rgba(255,255,255,0.2);
+}
+
+.hl-ad-ou-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hl-ad-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  border: 1px solid;
+  min-width: 58px;
+}
+
+.hl-ad-node-domain {
+  background: rgba(0,100,210,0.15);
+  border-color: rgba(66,165,245,0.4);
+}
+.hl-ad-node-dc {
+  background: rgba(74,20,140,0.25);
+  border-color: rgba(206,147,216,0.4);
+}
+.hl-ad-node-ou {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.12);
+  min-width: 44px;
+}
+
+.hl-ad-node-icon { font-size: 0.8rem; line-height: 1; }
+.hl-ad-node-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+.hl-ad-node-sub {
+  font-size: 0.52rem;
+  color: rgba(180,195,220,0.65);
+  text-align: center;
+  line-height: 1.2;
+}
+.hl-ad-node-status {
+  font-size: 0.52rem;
+  color: #69f0ae;
+  margin-top: 1px;
 }

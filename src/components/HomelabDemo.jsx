@@ -156,36 +156,109 @@ function RDPWindow({ onClose }) {
   )
 }
 
+// ── VM definitions ─────────────────────────────────────────────
+const VMS = [
+  { id: 'docker',       name: 'Docker Lab',           sub: 'Ubuntu Server · Docker & Compose',          status: 'running' },
+  { id: 'ad',           name: 'Active Directory Lab',  sub: 'Windows Server 2022 · Domain Controller',   status: 'running' },
+  { id: 'win11personal',name: 'Win11 Personal',        sub: 'Windows 11 Pro · Personal Setup',           status: 'saved'   },
+  { id: 'win11client',  name: 'Win11 Client',          sub: 'Windows 11 Pro · Clean Enterprise Image',   status: 'off'     },
+  { id: 'n8n',          name: 'n8n Lab',               sub: 'Ubuntu Server · Automation Workflows',      status: 'running' },
+]
+
+const STATUS_COLORS = { running: '#69f0ae', saved: '#f9a825', off: '#90a4ae' }
+const STATUS_LABELS = { running: 'Running', saved: 'Saved', off: 'Off' }
+
+// ── AD Domain Chart ─────────────────────────────────────────────
+function ADDomainChart() {
+  return (
+    <div className="hl-ad-chart">
+      {/* Forest root */}
+      <div className="hl-ad-forest">
+        <span className="hl-ad-forest-label">🌲 Forest: corp.homelab.local</span>
+      </div>
+      <div className="hl-ad-connector hl-ad-connector-v" />
+      {/* Domain row */}
+      <div className="hl-ad-domain-row">
+        <div className="hl-ad-node hl-ad-node-domain">
+          <span className="hl-ad-node-icon">🏛</span>
+          <span className="hl-ad-node-label">corp.homelab.local</span>
+          <span className="hl-ad-node-sub">Domain</span>
+        </div>
+      </div>
+      <div className="hl-ad-connector hl-ad-connector-v" />
+      {/* DCs row */}
+      <div className="hl-ad-dc-row">
+        <div className="hl-ad-branch">
+          <div className="hl-ad-connector hl-ad-connector-h" />
+          <div className="hl-ad-node hl-ad-node-dc">
+            <span className="hl-ad-node-icon">🖥</span>
+            <span className="hl-ad-node-label">DC01</span>
+            <span className="hl-ad-node-sub">PDC · DNS · DHCP</span>
+            <span className="hl-ad-node-status">● Running</span>
+          </div>
+        </div>
+        <div className="hl-ad-branch">
+          <div className="hl-ad-connector hl-ad-connector-h" />
+          <div className="hl-ad-node hl-ad-node-dc">
+            <span className="hl-ad-node-icon">🖥</span>
+            <span className="hl-ad-node-label">DC02</span>
+            <span className="hl-ad-node-sub">BDC · Replication</span>
+            <span className="hl-ad-node-status">● Running</span>
+          </div>
+        </div>
+      </div>
+      <div className="hl-ad-connector hl-ad-connector-v" />
+      {/* OUs row */}
+      <div className="hl-ad-ou-row">
+        {['IT Admins', 'Workstations', 'Servers', 'GPOs'].map(ou => (
+          <div key={ou} className="hl-ad-node hl-ad-node-ou">
+            <span className="hl-ad-node-icon">📁</span>
+            <span className="hl-ad-node-label">{ou}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Hyper-V window ─────────────────────────────────────────────
 function HyperVWindow({ onClose }) {
-  const [view, setView]               = useState('vms')      // 'vms' | 'containers'
+  const [selectedVM, setSelectedVM]   = useState(null)
   const [activeContainer, setActive]  = useState(null)
 
   const selected = CONTAINERS.find(c => c.id === activeContainer)
+  const vm = VMS.find(v => v.id === selectedVM)
+
+  const goBack = () => { setSelectedVM(null); setActive(null) }
 
   return (
     <WinWindow title="Hyper-V Manager" icon="⚙" onClose={onClose}>
-      {view === 'vms' && (
+      {!selectedVM && (
         <>
           <p className="hl-win-desc">
             <strong>Hyper-V</strong> is Windows&apos; built-in Type-1 hypervisor running directly
             on the server hardware. It hosts isolated virtual machines for testing and self-hosted services.
           </p>
           <div className="hl-section-label">💻 Virtual Machines</div>
-          <div className="hl-vm-card" onClick={() => setView('containers')}>
-            <div className="hl-vm-status"><span className="hl-status-dot" /> Running</div>
-            <div className="hl-vm-name">Docker Lab</div>
-            <div className="hl-vm-sub">Ubuntu Server · Docker &amp; Compose</div>
-            <div className="hl-vm-arrow">View Containers →</div>
+          <div className="hl-vm-list">
+            {VMS.map(v => (
+              <div key={v.id} className="hl-vm-card" onClick={() => setSelectedVM(v.id)}>
+                <div className="hl-vm-status" style={{ color: STATUS_COLORS[v.status] }}>
+                  <span className="hl-status-dot" style={{ background: STATUS_COLORS[v.status], boxShadow: `0 0 6px ${STATUS_COLORS[v.status]}` }} />
+                  {STATUS_LABELS[v.status]}
+                </div>
+                <div className="hl-vm-name">{v.name}</div>
+                <div className="hl-vm-sub">{v.sub}</div>
+                <div className="hl-vm-arrow">View Details →</div>
+              </div>
+            ))}
           </div>
         </>
       )}
 
-      {view === 'containers' && (
+      {selectedVM === 'docker' && (
         <>
-          <button className="hl-back-btn" onClick={() => { setView('vms'); setActive(null) }}>
-            ← Back to VMs
-          </button>
+          <button className="hl-back-btn" onClick={goBack}>← Back to VMs</button>
           <div className="hl-section-label">🐳 Docker Lab — Running Containers</div>
           <div className="hl-container-grid">
             {CONTAINERS.map(c => (
@@ -202,12 +275,90 @@ function HyperVWindow({ onClose }) {
           </div>
           {selected && (
             <div className="hl-container-desc" style={{ borderColor: selected.color }}>
-              <span className="hl-container-desc-title" style={{ color: selected.color }}>
-                {selected.name}
-              </span>
+              <span className="hl-container-desc-title" style={{ color: selected.color }}>{selected.name}</span>
               <p>{selected.desc}</p>
             </div>
           )}
+        </>
+      )}
+
+      {selectedVM === 'ad' && (
+        <>
+          <button className="hl-back-btn" onClick={goBack}>← Back to VMs</button>
+          <p className="hl-win-desc">
+            <strong>Active Directory Lab</strong> simulates a real enterprise domain environment.
+            Runs two domain controllers in a <strong>corp.homelab.local</strong> forest — used for
+            testing GPO deployment, RBAC, DNS, and domain-join workflows against Win11 clients.
+          </p>
+          <div className="hl-section-label">🏛 Domain Structure</div>
+          <ADDomainChart />
+        </>
+      )}
+
+      {selectedVM === 'win11personal' && (
+        <>
+          <button className="hl-back-btn" onClick={goBack}>← Back to VMs</button>
+          <p className="hl-win-desc">
+            <strong>Win11 Personal</strong> is a fully configured Windows 11 Pro VM with all personal
+            accounts, applications, and preferences pre-installed. Rather than reinstalling from scratch,
+            the entire state is captured as a <strong>Macrium Reflect</strong> backup image and stored
+            on the WDS server — restored in minutes bare-metal or as a VM.
+          </p>
+          <div className="hl-section-label">💾 Backup Strategy</div>
+          <ul className="hl-list">
+            {[
+              'Full image captured with Macrium Reflect',
+              'Image stored on WDS server for network restore',
+              'Incremental backups on configuration changes',
+              'Bootable recovery from PXE or USB fallback',
+            ].map(item => (
+              <li key={item}><span className="hl-img-dot hl-dot-green" />{item}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {selectedVM === 'win11client' && (
+        <>
+          <button className="hl-back-btn" onClick={goBack}>← Back to VMs</button>
+          <p className="hl-win-desc">
+            <strong>Win11 Client</strong> is a clean, enterprise-ready Windows 11 Pro image kept fully
+            patched with essential programs pre-installed. Acts as the gold master deployment image —
+            domain-joined, Macrium-captured, and deployed to physical or virtual client machines via WDS.
+          </p>
+          <div className="hl-section-label">🚀 Deployment Pipeline</div>
+          <ul className="hl-list">
+            {[
+              'Sysprep-sealed Windows 11 gold master image',
+              'Domain-joined to corp.homelab.local on first boot',
+              'Essential apps: Office, browser, 7-Zip, VLC, etc.',
+              'WDS PXE deploy to bare-metal in under 10 minutes',
+            ].map(item => (
+              <li key={item}><span className="hl-img-dot" />{item}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {selectedVM === 'n8n' && (
+        <>
+          <button className="hl-back-btn" onClick={goBack}>← Back to VMs</button>
+          <p className="hl-win-desc">
+            <strong>n8n Lab</strong> is a dedicated VM running n8n — a powerful open-source workflow
+            automation platform. Handles heavy, long-running automation jobs isolated from the main
+            Docker stack so workflows never impact production services.
+          </p>
+          <div className="hl-section-label">⚡ Active Workflows</div>
+          <ul className="hl-list">
+            {[
+              'GitHub → Webhook → Slack deployment notifications',
+              'Scheduled server health reports via Telegram',
+              'File watcher → auto-process & archive pipelines',
+              'API polling → database ingestion automations',
+            ].map(item => (
+              <li key={item}><span className="hl-img-dot" style={{ background: '#f46800' }} />{item}</li>
+            ))}
+          </ul>
         </>
       )}
     </WinWindow>

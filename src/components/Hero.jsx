@@ -125,10 +125,6 @@ export default function Hero() {
       <canvas ref={canvasRef} className="hero-canvas" />
 
       <div className="hero-content">
-        <div className="hero-badge">
-          <span className="hero-badge-dot" />
-          Open to Opportunities
-        </div>
         <div className="hero-greeting">Hello World, I&apos;m</div>
         <h1 className="hero-name" data-text="Enrique L. Portela">
           Enrique L. <span className="neon-text">Portela</span>

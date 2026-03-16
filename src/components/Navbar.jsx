@@ -27,6 +27,7 @@ export default function Navbar() {
 
         <a href="#hero" className="navbar-logo">
           <span className="logo-bracket">&lt;</span>
+          <span className="logo-ep">EP</span>
           <span className="logo-slash">/</span>
           <span className="logo-bracket">&gt;</span>
         </a>

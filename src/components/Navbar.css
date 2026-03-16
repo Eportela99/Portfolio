@@ -41,6 +41,12 @@
   color: var(--accent-cyan);
 }
 
+.logo-ep {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
 .logo-slash {
   color: var(--text-primary);
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './Hero.css'
+import profileImg from '../assets/Profile-Updated.png'
 
 const roles = [
   'Full Stack Developer',
@@ -124,6 +125,10 @@ export default function Hero() {
       <canvas ref={canvasRef} className="hero-canvas" />
 
       <div className="hero-content">
+        <div className="hero-badge">
+          <span className="hero-badge-dot" />
+          Open to Opportunities
+        </div>
         <div className="hero-greeting">Hello World, I&apos;m</div>
         <h1 className="hero-name" data-text="Enrique L. Portela">
           Enrique L. <span className="neon-text">Portela</span>
@@ -146,6 +151,16 @@ export default function Hero() {
         </div>
       </div>
 
+      {/* Profile photo */}
+      <div className="hero-photo-wrap">
+        <div className="hero-photo-ring hero-photo-ring-outer" />
+        <div className="hero-photo">
+          <img src={profileImg} alt="Enrique Portela" />
+          <div className="hero-photo-vignette" />
+          <div className="hero-photo-tint" />
+        </div>
+        <div className="hero-photo-glow" />
+      </div>
 
       {/* Desktop: mouse icon */}
       <div className="scroll-indicator scroll-indicator-mouse">

@@ -136,36 +136,89 @@
   flex-wrap: wrap;
 }
 
-/* Profile photo */
-.hero-photo {
+/* ── Available badge ── */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(67, 160, 71, 0.1);
+  border: 1px solid rgba(67, 160, 71, 0.3);
+  color: #69f0ae;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 5px 12px 5px 10px;
+  border-radius: 99px;
+  margin-bottom: 1rem;
+  width: fit-content;
+}
+
+.hero-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #43a047;
+  box-shadow: 0 0 6px #43a047, 0 0 12px rgba(67,160,71,0.4);
+  flex-shrink: 0;
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1;   box-shadow: 0 0 6px #43a047, 0 0 12px rgba(67,160,71,0.4); }
+  50%       { opacity: 0.5; box-shadow: 0 0 3px #43a047; }
+}
+
+/* ── Profile photo ── */
+.hero-photo-wrap {
   position: relative;
   z-index: 1;
   flex-shrink: 0;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  overflow: hidden;
+  width: 300px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hero-photo::before {
-  content: '';
+/* Outer decorative spinning ring */
+.hero-photo-ring-outer {
   position: absolute;
-  inset: 0;
+  inset: -18px;
   border-radius: 50%;
-  border: 2px solid transparent;
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)) border-box;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-cyan)) border-box;
   -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
-  animation: rotate 8s linear infinite;
+  animation: photo-ring-spin 8s linear infinite;
+  opacity: 0.5;
 }
 
-@keyframes rotate {
+@keyframes photo-ring-spin {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.hero-photo {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#0a0a0f, #0a0a0f) padding-box,
+    linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)) border-box;
+  animation: photo-border-spin 6s linear infinite;
+}
+
+@keyframes photo-border-spin {
+  0%   { background:
+    linear-gradient(#0a0a0f, #0a0a0f) padding-box,
+    linear-gradient(0deg, var(--accent-cyan), var(--accent-purple)) border-box; }
+  100% { background:
+    linear-gradient(#0a0a0f, #0a0a0f) padding-box,
+    linear-gradient(360deg, var(--accent-cyan), var(--accent-purple)) border-box; }
 }
 
 .hero-photo img {
@@ -174,6 +227,56 @@
   object-fit: cover;
   object-position: center top;
   display: block;
+  filter: contrast(1.05) brightness(0.88) saturate(0.82);
+}
+
+/* Vignette: fades edges to dark bg color, kills white background */
+.hero-photo-vignette {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 38%,
+    transparent 44%,
+    rgba(10, 10, 15, 0.55) 62%,
+    #0a0a0f 78%
+  );
+  pointer-events: none;
+}
+
+/* Subtle cyan light from top-right — neon treatment */
+.hero-photo-tint {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 70% 20%,
+    rgba(0, 212, 255, 0.07) 0%,
+    transparent 55%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Outer ambient glow */
+.hero-photo-glow {
+  position: absolute;
+  inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 48%,
+    rgba(0, 212, 255, 0.07) 65%,
+    rgba(124, 58, 237, 0.05) 78%,
+    transparent 88%
+  );
+  pointer-events: none;
+  animation: photo-glow-pulse 4s ease-in-out infinite;
+}
+
+@keyframes photo-glow-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1;   }
 }
 
 
@@ -266,10 +369,19 @@
     justify-content: center;
   }
 
-  .hero-photo {
-    width: 170px;
-    height: 170px;
+  .hero-badge {
+    margin: 0 auto 1rem;
+  }
+
+  .hero-photo-wrap {
+    width: 200px;
+    height: 200px;
     order: -1;
+  }
+
+  .hero-photo {
+    width: 190px;
+    height: 190px;
   }
 
   .scroll-indicator-mouse,

@@ -539,10 +539,20 @@
   .hl-win-desc    { font-size: 0.76rem; }
   .hl-section-label { font-size: 0.67rem; }
   .hl-list li     { font-size: 0.74rem; }
-  .hl-vm-name     { font-size: 0.78rem; }
-  .hl-vm-sub      { font-size: 0.65rem; }
+  .hl-vm-name     { font-size: 0.76rem; }
+  .hl-vm-sub      { font-size: 0.64rem; }
   .hl-vm-status   { font-size: 0.62rem; }
-  .hl-vm-arrow    { font-size: 0.62rem; }
+  .hl-vm-arrow    { font-size: 0.6rem; }
+
+  /* Fix VM card inner spacing so text doesn't overlap */
+  .hl-vm-card {
+    gap: 3px;
+    padding: 7px 10px;
+  }
+
+  .hl-vm-list {
+    gap: 6px;
+  }
 
   /* Win body: allow more scroll space */
   .hl-win-body {

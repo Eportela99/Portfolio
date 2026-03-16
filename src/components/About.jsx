@@ -29,6 +29,10 @@ export default function About() {
           </div>
 
           <div className="about-carousel-wrap fade-in">
+            <div className="about-education">
+              <span className="about-edu-label">Education</span>
+              <span className="about-edu-degree">Bachelor of Science in Computer Science</span>
+            </div>
             <p className="cc-section-label">Certifications</p>
             <CertCarousel />
           </div>

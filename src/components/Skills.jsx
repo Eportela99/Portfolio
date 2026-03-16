@@ -26,6 +26,7 @@ const CATEGORIES = [
       { name: 'Go',         icon: 'devicon-go-plain colored',            sub: 'Gin · REST · WebSockets' },
       { name: 'Java',       icon: 'devicon-java-plain colored',          sub: 'OOP · Spring' },
       { name: 'PostgreSQL', icon: 'devicon-postgresql-plain colored',    sub: 'CRUD · Migrations' },
+      { name: 'SQL Server', icon: 'devicon-microsoftsqlserver-plain colored', sub: 'T-SQL · Admin · SSMS' },
     ],
   },
   {
@@ -33,10 +34,14 @@ const CATEGORIES = [
     icon:   '🏗',
     accent: '#3b82f6',
     skills: [
-      { name: 'Docker',     icon: 'devicon-docker-plain colored',        sub: 'Compose · Images' },
-      { name: 'Linux',      icon: 'devicon-linux-plain colored',         sub: 'Bash · Ubuntu · Admin' },
-      { name: 'Azure',      icon: 'devicon-azure-plain colored',         sub: 'VMs · Active Directory' },
-      { name: 'Git',        icon: 'devicon-git-plain colored',           sub: 'GitHub · CI/CD' },
+      { name: 'Docker',           icon:  'devicon-docker-plain colored',      sub: 'Compose · Images' },
+      { name: 'Linux',            icon:  'devicon-linux-plain colored',        sub: 'Bash · Ubuntu · Admin' },
+      { name: 'Azure',            icon:  'devicon-azure-plain colored',        sub: 'VMs · Cloud Services' },
+      { name: 'Git',              icon:  'devicon-git-plain colored',          sub: 'GitHub · CI/CD' },
+      { name: 'Windows Server',   icon:  'devicon-windows8-original colored',  sub: 'Server 2019/2022' },
+      { name: 'Active Directory', emoji: '🗂',                                 sub: 'GPO · LDAP · Domains' },
+      { name: 'PowerShell',       icon:  'devicon-powershell-plain colored',   sub: 'Automation · Scripts' },
+      { name: 'Networking',       emoji: '🌐',                                 sub: 'TCP/IP · DNS · DHCP' },
     ],
   },
   {
@@ -44,9 +49,9 @@ const CATEGORIES = [
     icon:   '🛠',
     accent: '#10b981',
     skills: [
-      { name: 'Blender',    icon: 'devicon-blender-original colored',    sub: '3D · Modeling' },
-      { name: 'n8n',        img:  n8nIcon,                               sub: 'Automation · Workflows' },
-      { name: 'Ollama',     img:  ollamaIcon,                            sub: 'Local AI · LLMs' },
+      { name: 'Blender', icon: 'devicon-blender-original colored', sub: '3D · Modeling' },
+      { name: 'n8n',     img:  n8nIcon,                            sub: 'Automation · Workflows' },
+      { name: 'Ollama',  img:  ollamaIcon,                         sub: 'Local AI · LLMs' },
     ],
   },
 ]
@@ -62,26 +67,26 @@ export default function Skills() {
         </div>
 
         <div className="sk-grid">
-          {CATEGORIES.map((cat, ci) => (
+          {CATEGORIES.map((cat) => (
             <div
               key={cat.title}
               className="sk-card fade-in"
               style={{ '--cat-accent': cat.accent }}
             >
-              {/* Card header */}
               <div className="sk-card-header">
                 <span className="sk-cat-icon">{cat.icon}</span>
                 <span className="sk-cat-title">{cat.title}</span>
                 <span className="sk-cat-count">{cat.skills.length}</span>
               </div>
 
-              {/* Skill items */}
               <div className="sk-card-body">
                 {cat.skills.map((skill) => (
                   <div key={skill.name} className="sk-item">
                     {skill.icon
                       ? <i className={`${skill.icon} sk-item-icon`} />
-                      : <img src={skill.img} alt={skill.name} className="sk-item-img" />
+                      : skill.img
+                        ? <img src={skill.img} alt={skill.name} className="sk-item-img" />
+                        : <span className="sk-item-emoji">{skill.emoji}</span>
                     }
                     <div className="sk-item-info">
                       <span className="sk-item-name">{skill.name}</span>

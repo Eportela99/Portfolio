@@ -140,6 +140,14 @@
   transition: filter 0.25s ease;
 }
 
+.sk-item-emoji {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  line-height: 1;
+  width: 1.5rem;
+  text-align: center;
+}
+
 .sk-item-info {
   display: flex;
   flex-direction: column;

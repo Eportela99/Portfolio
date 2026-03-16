@@ -291,26 +291,40 @@
 }
 
 .phone-body {
-  width: 22px;
-  height: 38px;
+  width: 20px;
+  height: 34px;
   border: 2px solid rgba(0, 212, 255, 0.4);
-  border-radius: 5px;
+  border-radius: 4px 4px 5px 5px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding-bottom: 5px;
   position: relative;
+  overflow: hidden;
 }
 
+/* Speaker notch at top */
 .phone-body::before {
   content: '';
   position: absolute;
-  top: 5px;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 2px;
+  background: rgba(0, 212, 255, 0.4);
+  border-radius: 1px;
+}
+
+/* Home bar at bottom */
+.phone-body::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
   width: 8px;
   height: 2px;
-  background: rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.3);
   border-radius: 1px;
 }
 
@@ -319,6 +333,7 @@
   height: 4px;
   background: var(--accent-cyan);
   border-radius: 50%;
+  margin-top: 2px;
   animation: scroll-bounce 1.5s ease-in-out infinite;
 }
 
@@ -331,8 +346,8 @@
 }
 
 @keyframes scroll-bounce {
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(12px); opacity: 0.3; }
+  0%, 100% { transform: translateY(-4px); opacity: 1; }
+  50%       { transform: translateY(4px);  opacity: 0.3; }
 }
 
 @media (max-width: 768px) {
@@ -340,7 +355,8 @@
     flex-direction: column;
     text-align: center;
     gap: 2.5rem;
-    padding: 6rem 1.5rem 4rem;
+    /* extra bottom padding keeps scroll indicator from overlapping buttons */
+    padding: 6rem 1.5rem 6rem;
   }
 
   .hero-description {
@@ -366,8 +382,12 @@
     height: 190px;
   }
 
-  .scroll-indicator-mouse,
-  .scroll-indicator-phone {
+  /* Hide mouse, show phone icon */
+  .scroll-indicator-mouse {
     display: none;
+  }
+
+  .scroll-indicator-phone {
+    display: flex;
   }
 }

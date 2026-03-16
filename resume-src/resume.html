@@ -11,25 +11,24 @@
   html, body {
     width: 8.5in;
     height: 11in;
-    overflow: hidden;
     font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 8.4pt;
+    font-size: 9.2pt;
     color: #1a1a2e;
     background: #fff;
-    line-height: 1.35;
+    line-height: 1.45;
   }
 
   /* ══ Header ══ */
   .header {
     background: linear-gradient(135deg, #0d1b4b 0%, #1a2a7a 60%, #0e3460 100%);
-    padding: 0.19in 0.5in 0.17in;
+    padding: 0.26in 0.55in 0.22in;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
   .header-left h1 {
-    font-size: 21pt;
+    font-size: 24pt;
     font-weight: 800;
     color: #fff;
     letter-spacing: -0.5px;
@@ -37,99 +36,99 @@
   }
 
   .header-left .tagline {
-    font-size: 8.2pt;
+    font-size: 9pt;
     color: #7ec8e3;
-    margin-top: 3px;
+    margin-top: 5px;
     letter-spacing: 0.5px;
   }
 
   .header-right {
     text-align: right;
-    font-size: 8pt;
+    font-size: 8.5pt;
     color: #c8dff5;
-    line-height: 1.75;
+    line-height: 1.9;
   }
 
   .header-right a { color: #7ec8e3; text-decoration: none; }
-  .icon { margin-right: 3px; color: #7ec8e3; }
+  .icon { margin-right: 4px; color: #7ec8e3; }
 
   /* ══ Body ══ */
-  .body { padding: 0.16in 0.5in 0.14in; }
+  .body { padding: 0.2in 0.55in 0.2in; }
 
   /* ══ Two-column layout ══ */
   .two-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 20px;
+    gap: 0 24px;
   }
 
   /* ══ Section ══ */
-  .section { margin-bottom: 7px; }
+  .section { margin-bottom: 11px; }
 
   .section-title {
-    font-size: 7.8pt;
+    font-size: 8.4pt;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1.3px;
+    letter-spacing: 1.4px;
     color: #fff;
     background: linear-gradient(90deg, #0d1b4b, #1a3a8a);
-    padding: 2.5px 8px;
-    margin-bottom: 5px;
+    padding: 3.5px 10px;
+    margin-bottom: 7px;
     border-radius: 2px;
     display: block;
   }
 
   /* ══ Summary ══ */
   .summary p {
-    font-size: 8.3pt;
+    font-size: 9pt;
     color: #333;
-    line-height: 1.5;
+    line-height: 1.6;
     border-left: 3px solid #1a3a8a;
-    padding-left: 7px;
+    padding-left: 9px;
   }
 
   /* ══ Experience ══ */
-  .job { margin-bottom: 6px; }
+  .job { margin-bottom: 9px; }
   .job:last-child { margin-bottom: 0; }
 
   .job-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0;
+    margin-bottom: 1px;
   }
 
   .job-company {
     font-weight: 800;
-    font-size: 9pt;
+    font-size: 9.8pt;
     color: #0d1b4b;
   }
 
   .job-current {
-    font-size: 7pt;
+    font-size: 7.5pt;
     font-weight: 700;
     color: #fff;
     background: #1a7a3a;
-    padding: 1px 6px;
+    padding: 1.5px 8px;
     border-radius: 99px;
   }
 
   .job-roles {
-    font-size: 8pt;
+    font-size: 8.6pt;
     color: #1a3a8a;
     font-weight: 600;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   .job ul { list-style: none; }
 
   .job ul li {
     position: relative;
-    padding-left: 11px;
-    margin-bottom: 1px;
+    padding-left: 12px;
+    margin-bottom: 2.5px;
     color: #333;
-    font-size: 8.3pt;
-    line-height: 1.4;
+    font-size: 8.9pt;
+    line-height: 1.45;
   }
 
   .job ul li::before {
@@ -137,7 +136,7 @@
     position: absolute;
     left: 0;
     color: #1a3a8a;
-    font-size: 6.5pt;
+    font-size: 7pt;
     top: 1.5px;
   }
 
@@ -145,16 +144,16 @@
   .skills-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3px 16px;
+    gap: 5px 18px;
   }
 
   .skill-row {
-    font-size: 8pt;
-    padding: 2px 6px;
+    font-size: 8.7pt;
+    padding: 3.5px 8px;
     background: #eef2ff;
     border-left: 3px solid #1a3a8a;
     border-radius: 2px;
-    line-height: 1.45;
+    line-height: 1.5;
   }
 
   .skill-label { font-weight: 800; color: #0d1b4b; }
@@ -164,25 +163,25 @@
   .edu-item {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    padding-bottom: 3px;
-    margin-bottom: 3px;
+    align-items: center;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
     border-bottom: 1px dashed #d0d8f0;
   }
 
   .edu-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-  .edu-degree { font-weight: 700; font-size: 8.5pt; color: #0d1b4b; }
-  .edu-school { font-size: 8pt; color: #555; }
-  .edu-note { font-size: 7.5pt; color: #1a3a8a; font-style: italic; white-space: nowrap; }
+  .edu-degree { font-weight: 700; font-size: 9pt; color: #0d1b4b; }
+  .edu-school { font-size: 8.4pt; color: #555; margin-top: 1px; }
+  .edu-note { font-size: 8pt; color: #1a3a8a; font-style: italic; white-space: nowrap; }
 
   /* ══ Certifications ══ */
-  .certs { display: flex; flex-direction: column; gap: 2.5px; }
+  .certs { display: flex; flex-direction: column; gap: 4px; }
 
   .cert-item {
-    font-size: 8.1pt;
+    font-size: 8.7pt;
     color: #333;
-    padding: 2px 6px 2px 20px;
+    padding: 3px 8px 3px 22px;
     position: relative;
     background: #eef2ff;
     border-radius: 2px;
@@ -191,19 +190,19 @@
   .cert-item::before {
     content: '✓';
     position: absolute;
-    left: 5px;
+    left: 7px;
     color: #1a7a3a;
     font-weight: 800;
-    font-size: 8pt;
+    font-size: 8.5pt;
   }
 
   /* ══ Languages ══ */
-  .lang-list { display: flex; flex-direction: column; gap: 2.5px; }
+  .lang-list { display: flex; flex-direction: column; gap: 4px; }
 
   .lang-item {
-    font-size: 8.1pt;
+    font-size: 8.7pt;
     color: #333;
-    padding: 2px 8px;
+    padding: 3px 10px;
     background: #eef2ff;
     border-radius: 2px;
     display: flex;
@@ -235,7 +234,7 @@
     <!-- Summary -->
     <div class="section summary">
       <div class="section-title">Summary</div>
-      <p>Full Stack Developer and IT Professional with 5+ years of experience in software development, infrastructure management, and field IT support. Skilled in building modern web applications, administering Windows Server environments, deploying POS systems, and resolving complex technical challenges. Bilingual in English and Spanish.</p>
+      <p>Full Stack Developer and IT Professional with 5+ years of hands-on experience spanning software development, infrastructure management, and field IT support. Proven ability to build modern web applications, administer Windows Server environments, deploy and maintain POS systems, and solve complex technical challenges across diverse client environments. Bilingual in English and Spanish.</p>
     </div>
 
     <!-- Experience -->
@@ -250,9 +249,10 @@
         <div class="job-roles">IT Field Technician &nbsp;/&nbsp; Helpdesk Specialist &nbsp;/&nbsp; Project Manager</div>
         <ul>
           <li>Deploy, configure, and service POS systems across local supermarket chains, ensuring minimal downtime and operational continuity.</li>
-          <li>Provision servers and workstations — OS setup, software deployment, hardware configuration, and domain integration.</li>
-          <li>Administer client databases and troubleshoot hardware failures, LAN/WAN issues, and network equipment configurations.</li>
-          <li>Manage Group Policy Objects (GPOs) and Active Directory across Windows domains to enforce security and standardize environments.</li>
+          <li>Provision servers and workstations — OS installation, software deployment, hardware configuration, and domain integration.</li>
+          <li>Administer and optimize client databases, ensuring data integrity and consistent system performance.</li>
+          <li>Troubleshoot hardware failures, LAN/WAN connectivity issues, and configure network equipment to restore client infrastructure.</li>
+          <li>Manage Group Policy Objects (GPOs) and Active Directory across Windows domains to enforce security policies and standardize environments.</li>
         </ul>
       </div>
 
@@ -263,7 +263,7 @@
         <div class="job-roles">IT Technician</div>
         <ul>
           <li>Diagnosed and repaired smartphones, tablets, and computers including screen replacements, battery swaps, and component-level repairs.</li>
-          <li>Provided technical customer support and managed inventory and sales of accessories and replacement parts.</li>
+          <li>Delivered hands-on technical support and guidance to customers, managing inventory and facilitating sales of accessories and parts.</li>
         </ul>
       </div>
     </div>
@@ -303,7 +303,7 @@
       </div>
     </div>
 
-    <!-- Certifications + Languages side by side -->
+    <!-- Certifications + Languages -->
     <div class="two-col">
       <div class="section" style="margin-bottom:0">
         <div class="section-title">Certifications</div>

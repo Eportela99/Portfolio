@@ -168,7 +168,7 @@ export default function Projects() {
 
         {/* ── Homelab ── */}
         <div className="featured-project featured-project-rev glass-card fade-in">
-          <div className="featured-img-wrap">
+          <div className="featured-img-wrap featured-img-wrap--demo">
             <HomelabDemo />
           </div>
 

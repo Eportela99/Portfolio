@@ -490,3 +490,75 @@
   color: #69f0ae;
   margin-top: 1px;
 }
+
+/* ══════════════════════════════════════
+   Mobile layout
+══════════════════════════════════════ */
+@media (max-width: 600px) {
+  /* Taller, portrait-friendly container */
+  .hl-desktop {
+    aspect-ratio: unset;
+    height: 100%;
+  }
+
+  /* Icons move to a horizontal row at the top */
+  .hl-icons-area {
+    top: 6px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .hl-desk-icon {
+    width: 54px;
+    padding: 4px 2px;
+    gap: 3px;
+  }
+
+  .hl-desk-icon-img { width: 32px; height: 32px; }
+  .hl-desk-icon-img svg { width: 30px; height: 30px; }
+  .hl-desk-icon-label { font-size: 0.6rem; }
+
+  /* Window area: full width below the icon row */
+  .hl-window-area {
+    padding: 64px 6px 38px 6px;
+    align-items: flex-start;
+  }
+
+  /* Window fills available width */
+  .hl-window {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Slightly larger text for readability */
+  .hl-win-title   { font-size: 0.78rem; }
+  .hl-win-desc    { font-size: 0.76rem; }
+  .hl-section-label { font-size: 0.67rem; }
+  .hl-list li     { font-size: 0.74rem; }
+  .hl-vm-name     { font-size: 0.78rem; }
+  .hl-vm-sub      { font-size: 0.65rem; }
+  .hl-vm-status   { font-size: 0.62rem; }
+  .hl-vm-arrow    { font-size: 0.62rem; }
+
+  /* Win body: allow more scroll space */
+  .hl-win-body {
+    max-height: 330px;
+  }
+
+  /* Container grid: 5 per row but slightly larger symbols */
+  .hl-container-symbol { font-size: 1.2rem; }
+  .hl-container-name   { font-size: 0.55rem; }
+
+  /* AD chart nodes: slightly tighter */
+  .hl-ad-node { min-width: 48px; padding: 3px 4px; }
+  .hl-ad-node-ou { min-width: 36px; }
+  .hl-ad-node-label { font-size: 0.58rem; }
+  .hl-ad-node-sub   { font-size: 0.5rem; }
+
+  /* Watermark: reposition above taskbar */
+  .hl-watermark { bottom: 36px; right: 8px; font-size: 0.55rem; }
+}

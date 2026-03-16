@@ -197,6 +197,11 @@
     background: #0d1117;
   }
 
+  /* Homelab demo needs more vertical space on mobile */
+  .featured-img-wrap--demo {
+    height: 460px;
+  }
+
   .featured-img {
     object-fit: contain;
     object-position: center;

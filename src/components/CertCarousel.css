@@ -1,0 +1,238 @@
+/* ═══════════════════════════════════════
+   3-D Certificate Carousel
+═══════════════════════════════════════ */
+.cc-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  width: 100%;
+  user-select: none;
+}
+
+/* Stage — 3-D context */
+.cc-stage {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  perspective: 1100px;
+  perspective-origin: 50% 50%;
+}
+
+/* ── Card base ── */
+.cc-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220px;
+  height: 310px;
+  border-radius: 14px;
+  cursor: pointer;
+  /* centre pivot */
+  transform-origin: center center;
+  transition:
+    transform  0.65s cubic-bezier(0.35, 0.1, 0.25, 1),
+    opacity    0.65s ease,
+    box-shadow 0.65s ease;
+  will-change: transform, opacity;
+}
+
+.cc-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 212, 255, 0.12);
+  background: #0a0d16;
+}
+
+.cc-card-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* Subtle dark overlay */
+.cc-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(5, 8, 20, 0.85) 100%
+  );
+}
+
+/* Label at bottom of active card */
+.cc-card-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cc-card-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.cc-card-issuer {
+  font-size: 0.7rem;
+  color: var(--accent-cyan);
+  opacity: 0.85;
+}
+
+/* Neon glow behind active card */
+.cc-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 212, 255, 0.18) 0%,
+    rgba(124, 58, 237, 0.1) 45%,
+    transparent 70%
+  );
+  z-index: -1;
+  pointer-events: none;
+  animation: cc-glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes cc-glow-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.08); }
+}
+
+/* ── Positional transforms ── */
+/* Each card is translated by -50% to pivot at its own center */
+
+.cc-pos-center {
+  transform: translate(-50%, -50%) translateZ(80px) rotateY(0deg) scale(1);
+  opacity: 1;
+  z-index: 4;
+  cursor: default;
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.35),
+    0 0 30px rgba(0, 212, 255, 0.15),
+    0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.cc-pos-right {
+  transform: translate(-50%, -50%) translateX(160px) translateZ(-40px) rotateY(-38deg) scale(0.78);
+  opacity: 0.55;
+  z-index: 3;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.cc-pos-left {
+  transform: translate(-50%, -50%) translateX(-160px) translateZ(-40px) rotateY(38deg) scale(0.78);
+  opacity: 0.55;
+  z-index: 3;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.cc-pos-back {
+  transform: translate(-50%, -50%) translateZ(-120px) scale(0.55);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ── Navigation ── */
+.cc-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.cc-btn {
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  color: var(--accent-cyan);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s;
+  line-height: 1;
+}
+
+.cc-btn:hover {
+  background: rgba(0, 212, 255, 0.18);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
+}
+
+.cc-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.25);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.cc-dot.active {
+  background: var(--accent-cyan);
+  transform: scale(1.3);
+  box-shadow: 0 0 6px var(--accent-cyan);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .cc-stage {
+    height: 280px;
+  }
+
+  .cc-card {
+    width: 180px;
+    height: 255px;
+  }
+
+  .cc-pos-right {
+    transform: translate(-50%, -50%) translateX(130px) translateZ(-40px) rotateY(-38deg) scale(0.72);
+  }
+
+  .cc-pos-left {
+    transform: translate(-50%, -50%) translateX(-130px) translateZ(-40px) rotateY(38deg) scale(0.72);
+  }
+}
+
+@media (max-width: 520px) {
+  .cc-stage {
+    height: 260px;
+  }
+
+  .cc-card {
+    width: 160px;
+    height: 225px;
+  }
+
+  .cc-pos-right {
+    transform: translate(-50%, -50%) translateX(110px) translateZ(-30px) rotateY(-35deg) scale(0.65);
+  }
+
+  .cc-pos-left {
+    transform: translate(-50%, -50%) translateX(-110px) translateZ(-30px) rotateY(35deg) scale(0.65);
+  }
+}

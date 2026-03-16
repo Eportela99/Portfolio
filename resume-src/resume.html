@@ -2,130 +2,134 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Enrique L. Portela – Resume</title>
 <style>
+  @page { size: Letter; margin: 0; }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
+  html, body {
+    width: 8.5in;
+    height: 11in;
+    overflow: hidden;
     font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 9pt;
+    font-size: 8.4pt;
     color: #1a1a2e;
     background: #fff;
-    line-height: 1.4;
+    line-height: 1.35;
   }
 
   /* ══ Header ══ */
   .header {
     background: linear-gradient(135deg, #0d1b4b 0%, #1a2a7a 60%, #0e3460 100%);
-    padding: 0.3in 0.55in 0.25in;
+    padding: 0.19in 0.5in 0.17in;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
   .header-left h1 {
-    font-size: 24pt;
+    font-size: 21pt;
     font-weight: 800;
-    color: #ffffff;
+    color: #fff;
     letter-spacing: -0.5px;
     line-height: 1;
   }
 
   .header-left .tagline {
-    font-size: 9pt;
+    font-size: 8.2pt;
     color: #7ec8e3;
-    margin-top: 4px;
-    letter-spacing: 0.6px;
-    font-weight: 400;
+    margin-top: 3px;
+    letter-spacing: 0.5px;
   }
 
   .header-right {
     text-align: right;
-    font-size: 8.3pt;
+    font-size: 8pt;
     color: #c8dff5;
-    line-height: 1.85;
+    line-height: 1.75;
   }
 
   .header-right a { color: #7ec8e3; text-decoration: none; }
-
-  .header-right .icon { margin-right: 4px; color: #7ec8e3; }
+  .icon { margin-right: 3px; color: #7ec8e3; }
 
   /* ══ Body ══ */
-  .body {
-    padding: 0.22in 0.55in 0.22in;
+  .body { padding: 0.16in 0.5in 0.14in; }
+
+  /* ══ Two-column layout ══ */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
   }
 
   /* ══ Section ══ */
-  .section { margin-bottom: 9px; }
+  .section { margin-bottom: 7px; }
 
   .section-title {
-    font-size: 8.5pt;
+    font-size: 7.8pt;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1.4px;
+    letter-spacing: 1.3px;
     color: #fff;
     background: linear-gradient(90deg, #0d1b4b, #1a3a8a);
-    padding: 3px 10px 3px 8px;
-    margin-bottom: 6px;
+    padding: 2.5px 8px;
+    margin-bottom: 5px;
     border-radius: 2px;
-    display: inline-block;
+    display: block;
   }
 
   /* ══ Summary ══ */
   .summary p {
+    font-size: 8.3pt;
     color: #333;
-    font-size: 8.9pt;
-    line-height: 1.55;
+    line-height: 1.5;
     border-left: 3px solid #1a3a8a;
-    padding-left: 8px;
+    padding-left: 7px;
   }
 
   /* ══ Experience ══ */
-  .job { margin-bottom: 7px; }
+  .job { margin-bottom: 6px; }
   .job:last-child { margin-bottom: 0; }
 
   .job-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 1px;
+    align-items: center;
+    margin-bottom: 0;
   }
 
   .job-company {
     font-weight: 800;
-    font-size: 9.4pt;
+    font-size: 9pt;
     color: #0d1b4b;
   }
 
   .job-current {
-    font-size: 7.6pt;
+    font-size: 7pt;
     font-weight: 700;
     color: #fff;
     background: #1a7a3a;
-    padding: 1px 7px;
+    padding: 1px 6px;
     border-radius: 99px;
   }
 
   .job-roles {
-    font-size: 8.5pt;
+    font-size: 8pt;
     color: #1a3a8a;
     font-weight: 600;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   }
 
-  .job ul {
-    padding-left: 0;
-    list-style: none;
-  }
+  .job ul { list-style: none; }
 
   .job ul li {
     position: relative;
-    padding-left: 12px;
-    margin-bottom: 1.5px;
+    padding-left: 11px;
+    margin-bottom: 1px;
     color: #333;
-    font-size: 8.7pt;
-    line-height: 1.45;
+    font-size: 8.3pt;
+    line-height: 1.4;
   }
 
   .job ul li::before {
@@ -133,24 +137,24 @@
     position: absolute;
     left: 0;
     color: #1a3a8a;
-    font-size: 7pt;
-    top: 1px;
+    font-size: 6.5pt;
+    top: 1.5px;
   }
 
   /* ══ Skills ══ */
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px 16px;
   }
 
   .skill-row {
-    font-size: 8.5pt;
-    line-height: 1.5;
+    font-size: 8pt;
     padding: 2px 6px;
-    background: #f0f4ff;
+    background: #eef2ff;
     border-left: 3px solid #1a3a8a;
     border-radius: 2px;
+    line-height: 1.45;
   }
 
   .skill-label { font-weight: 800; color: #0d1b4b; }
@@ -161,70 +165,46 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 4px;
-    padding-bottom: 4px;
+    padding-bottom: 3px;
+    margin-bottom: 3px;
     border-bottom: 1px dashed #d0d8f0;
   }
 
   .edu-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-  .edu-degree {
-    font-weight: 700;
-    font-size: 9pt;
-    color: #0d1b4b;
-  }
-
-  .edu-school {
-    font-size: 8.4pt;
-    color: #555;
-  }
-
-  .edu-note {
-    font-size: 7.8pt;
-    color: #1a3a8a;
-    font-style: italic;
-  }
-
-  /* ══ Bottom row ══ */
-  .bottom-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 24px;
-  }
+  .edu-degree { font-weight: 700; font-size: 8.5pt; color: #0d1b4b; }
+  .edu-school { font-size: 8pt; color: #555; }
+  .edu-note { font-size: 7.5pt; color: #1a3a8a; font-style: italic; white-space: nowrap; }
 
   /* ══ Certifications ══ */
-  .certs {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
+  .certs { display: flex; flex-direction: column; gap: 2.5px; }
 
   .cert-item {
-    font-size: 8.5pt;
+    font-size: 8.1pt;
     color: #333;
-    padding: 2px 6px 2px 22px;
+    padding: 2px 6px 2px 20px;
     position: relative;
-    background: #f0f4ff;
+    background: #eef2ff;
     border-radius: 2px;
   }
 
   .cert-item::before {
     content: '✓';
     position: absolute;
-    left: 6px;
+    left: 5px;
     color: #1a7a3a;
     font-weight: 800;
-    font-size: 8.5pt;
+    font-size: 8pt;
   }
 
   /* ══ Languages ══ */
-  .lang-list { display: flex; flex-direction: column; gap: 3px; }
+  .lang-list { display: flex; flex-direction: column; gap: 2.5px; }
 
   .lang-item {
-    font-size: 8.5pt;
+    font-size: 8.1pt;
     color: #333;
-    padding: 2px 6px;
-    background: #f0f4ff;
+    padding: 2px 8px;
+    background: #eef2ff;
     border-radius: 2px;
     display: flex;
     justify-content: space-between;
@@ -255,12 +235,7 @@
     <!-- Summary -->
     <div class="section summary">
       <div class="section-title">Summary</div>
-      <p>
-        Results-driven Full Stack Developer and IT Professional with 5+ years of hands-on experience spanning
-        software development, infrastructure management, and field IT support. Proven ability to build modern
-        web applications, administer Windows Server environments, deploy POS systems, and solve complex
-        technical challenges across diverse client environments. Bilingual in English and Spanish.
-      </p>
+      <p>Full Stack Developer and IT Professional with 5+ years of experience in software development, infrastructure management, and field IT support. Skilled in building modern web applications, administering Windows Server environments, deploying POS systems, and resolving complex technical challenges. Bilingual in English and Spanish.</p>
     </div>
 
     <!-- Experience -->
@@ -269,26 +244,25 @@
 
       <div class="job">
         <div class="job-header">
-          <span class="job-company">Tecnica Systems &nbsp;—&nbsp; Miami, FL</span>
+          <span class="job-company">Tecnica Systems — Miami, FL</span>
           <span class="job-current">Current</span>
         </div>
         <div class="job-roles">IT Field Technician &nbsp;/&nbsp; Helpdesk Specialist &nbsp;/&nbsp; Project Manager</div>
         <ul>
           <li>Deploy, configure, and service POS systems across local supermarket chains, ensuring minimal downtime and operational continuity.</li>
-          <li>Provision servers and workstations — OS installation, software deployment, hardware configuration, and domain integration.</li>
-          <li>Administer and optimize client databases, ensuring data integrity and consistent system performance.</li>
-          <li>Troubleshoot hardware failures, LAN/WAN connectivity issues, and configure network equipment to restore client infrastructure.</li>
-          <li>Manage Group Policy Objects (GPOs) and Active Directory across Windows domains to enforce security policies and standardize environments.</li>
+          <li>Provision servers and workstations — OS setup, software deployment, hardware configuration, and domain integration.</li>
+          <li>Administer client databases and troubleshoot hardware failures, LAN/WAN issues, and network equipment configurations.</li>
+          <li>Manage Group Policy Objects (GPOs) and Active Directory across Windows domains to enforce security and standardize environments.</li>
         </ul>
       </div>
 
       <div class="job">
         <div class="job-header">
-          <span class="job-company">ePhone Solutions &nbsp;—&nbsp; Miami, FL</span>
+          <span class="job-company">ePhone Solutions — Miami, FL</span>
         </div>
         <div class="job-roles">IT Technician</div>
         <ul>
-          <li>Diagnosed and repaired smartphones, tablets, and computers — screen replacements, battery swaps, and component-level repairs.</li>
+          <li>Diagnosed and repaired smartphones, tablets, and computers including screen replacements, battery swaps, and component-level repairs.</li>
           <li>Provided technical customer support and managed inventory and sales of accessories and replacement parts.</li>
         </ul>
       </div>
@@ -298,54 +272,39 @@
     <div class="section">
       <div class="section-title">Technical Skills</div>
       <div class="skills-grid">
-        <div class="skill-row">
-          <span class="skill-label">Frontend: </span>
-          <span class="skill-values">React, TypeScript, JavaScript, HTML, CSS, Swift</span>
-        </div>
-        <div class="skill-row">
-          <span class="skill-label">Backend: </span>
-          <span class="skill-values">Node.js, Python, Go, Java, PostgreSQL, SQL Server</span>
-        </div>
-        <div class="skill-row">
-          <span class="skill-label">Infrastructure: </span>
-          <span class="skill-values">Docker, Linux, Azure, Windows Server, Active Directory, PowerShell, Git</span>
-        </div>
-        <div class="skill-row">
-          <span class="skill-label">Tools &amp; AI: </span>
-          <span class="skill-values">n8n, Ollama, Blender, Networking (TCP/IP · DNS · DHCP)</span>
-        </div>
+        <div class="skill-row"><span class="skill-label">Frontend: </span><span class="skill-values">React, TypeScript, JavaScript, HTML, CSS, Swift</span></div>
+        <div class="skill-row"><span class="skill-label">Backend: </span><span class="skill-values">Node.js, Python, Go, Java, PostgreSQL, SQL Server</span></div>
+        <div class="skill-row"><span class="skill-label">Infrastructure: </span><span class="skill-values">Docker, Linux, Azure, Windows Server, Active Directory, PowerShell, Git</span></div>
+        <div class="skill-row"><span class="skill-label">Tools &amp; AI: </span><span class="skill-values">n8n, Ollama, Blender, Networking (TCP/IP · DNS · DHCP)</span></div>
       </div>
     </div>
 
     <!-- Education -->
     <div class="section">
       <div class="section-title">Education</div>
-
       <div class="edu-item">
         <div>
           <div class="edu-degree">Bachelor of Science in Computer Science</div>
-          <div class="edu-school">Florida International University (FIU) &nbsp;—&nbsp; Miami, FL</div>
+          <div class="edu-school">Florida International University (FIU) — Miami, FL</div>
         </div>
       </div>
-
       <div class="edu-item">
         <div>
           <div class="edu-degree">Associate of Arts</div>
-          <div class="edu-school">Miami Dade College &nbsp;—&nbsp; Miami, FL</div>
+          <div class="edu-school">Miami Dade College — Miami, FL</div>
         </div>
       </div>
-
       <div class="edu-item">
         <div>
-          <div class="edu-degree">High School Diploma &nbsp;—&nbsp; iTech Magnet Program</div>
-          <div class="edu-school">Miami Springs Senior High School &nbsp;—&nbsp; Miami, FL</div>
+          <div class="edu-degree">High School Diploma — iTech Magnet Program</div>
+          <div class="edu-school">Miami Springs Senior High School — Miami, FL</div>
         </div>
         <div class="edu-note">Adobe &amp; Windows Certified</div>
       </div>
     </div>
 
-    <!-- Certifications + Languages -->
-    <div class="bottom-row">
+    <!-- Certifications + Languages side by side -->
+    <div class="two-col">
       <div class="section" style="margin-bottom:0">
         <div class="section-title">Certifications</div>
         <div class="certs">
@@ -355,7 +314,6 @@
           <span class="cert-item">Adobe Illustrator CS6</span>
         </div>
       </div>
-
       <div class="section" style="margin-bottom:0">
         <div class="section-title">Languages</div>
         <div class="lang-list">
@@ -365,6 +323,6 @@
       </div>
     </div>
 
-  </div><!-- /body -->
+  </div>
 </body>
 </html>

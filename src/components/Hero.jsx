@@ -153,13 +153,11 @@ export default function Hero() {
 
       {/* Profile photo */}
       <div className="hero-photo-wrap">
-        <div className="hero-photo-ring-outer" />
         <div className="hero-photo">
           <img src={profileImg} alt="Enrique Portela" />
           <div className="hero-photo-vignette" />
           <div className="hero-photo-tint" />
         </div>
-        <div className="hero-photo-glow" />
       </div>
 
       {/* Desktop: mouse icon */}

@@ -182,23 +182,6 @@
   justify-content: center;
 }
 
-.hero-photo-ring-outer {
-  position: absolute;
-  inset: -18px;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-cyan)) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out;
-  mask-composite: exclude;
-  animation: photo-ring-spin 8s linear infinite;
-  opacity: 0.5;
-}
-
-@keyframes photo-ring-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
 
 .hero-photo {
   position: relative;
@@ -241,26 +224,6 @@
   background: radial-gradient(circle at 70% 20%, rgba(0,212,255,0.07) 0%, transparent 55%);
   mix-blend-mode: screen;
   pointer-events: none;
-}
-
-.hero-photo-glow {
-  position: absolute;
-  inset: -30px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    transparent 48%,
-    rgba(0,212,255,0.07) 65%,
-    rgba(124,58,237,0.05) 78%,
-    transparent 88%
-  );
-  pointer-events: none;
-  animation: photo-glow-pulse 4s ease-in-out infinite;
-}
-
-@keyframes photo-glow-pulse {
-  0%, 100% { opacity: 0.7; }
-  50%       { opacity: 1; }
 }
 
 

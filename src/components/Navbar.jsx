@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import './Navbar.css'
-import profileImg from '../assets/Profile-Updated.png'
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -10,9 +9,8 @@ const navLinks = [
 ]
 
 export default function Navbar() {
-  const [scrolled,      setScrolled]      = useState(false)
-  const [menuOpen,      setMenuOpen]      = useState(false)
-  const [avatarExpanded, setAvatarExpanded] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -20,28 +18,16 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => {
-    const close = (e) => {
-      if (avatarExpanded && !e.target.closest('.navbar-logo')) setAvatarExpanded(false)
-    }
-    document.addEventListener('mousedown', close)
-    return () => document.removeEventListener('mousedown', close)
-  }, [avatarExpanded])
-
   const handleLinkClick = () => setMenuOpen(false)
 
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
 
-        <a
-          href="#hero"
-          className={`navbar-logo${avatarExpanded ? ' avatar-expanded' : ''}`}
-          onClick={(e) => { e.preventDefault(); setAvatarExpanded(v => !v) }}
-        >
+        <a href="#hero" className="navbar-logo">
           <span className="logo-bracket">&lt;</span>
-          <img src={profileImg} alt="Enrique Portela" className="navbar-avatar" />
-          <span className="logo-bracket">/&gt;</span>
+          <span className="logo-slash">/</span>
+          <span className="logo-bracket">&gt;</span>
         </a>
 
         <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>

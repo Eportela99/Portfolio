@@ -41,46 +41,8 @@
   color: var(--accent-cyan);
 }
 
-.navbar-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: top center;
-  border: 2px solid rgba(0, 212, 255, 0.45);
-  box-shadow: 0 0 8px rgba(0, 212, 255, 0.25);
-  flex-shrink: 0;
-  transition:
-    width   0.45s cubic-bezier(0.34, 1.4, 0.64, 1),
-    height  0.45s cubic-bezier(0.34, 1.4, 0.64, 1),
-    border-color 0.3s ease,
-    box-shadow   0.3s ease;
-}
-
-.navbar-logo:hover .navbar-avatar {
-  border-color: rgba(0, 212, 255, 0.8);
-  box-shadow: 0 0 14px rgba(0, 212, 255, 0.45);
-}
-
-/* Expanded state */
-.avatar-expanded .navbar-avatar {
-  width: 120px;
-  height: 120px;
-  border-color: rgba(0, 212, 255, 0.9);
-  box-shadow:
-    0 0 0 3px rgba(0, 212, 255, 0.25),
-    0 0 30px rgba(0, 212, 255, 0.5),
-    0 8px 40px rgba(0, 0, 0, 0.6);
-}
-
-.avatar-expanded .logo-bracket {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.logo-bracket {
-  transition: opacity 0.2s ease;
+.logo-slash {
+  color: var(--text-primary);
 }
 
 .logo-bracket {

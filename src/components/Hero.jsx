@@ -151,46 +151,15 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ID Card */}
-      <div className="hero-idcard">
-
-        {/* Lanyard hole */}
-        <div className="hero-idcard-lanyard" />
-
-        {/* Header strip */}
-        <div className="hero-idcard-header">
-          <div className="hero-idcard-chip">
-            <div className="hero-idcard-chip-lines" />
-          </div>
-          <span className="hero-idcard-header-label">DEVELOPER ID</span>
-          <span className="hero-idcard-logo">&lt;/&gt;</span>
+      {/* Profile photo */}
+      <div className="hero-photo-wrap">
+        <div className="hero-photo-ring-outer" />
+        <div className="hero-photo">
+          <img src={profileImg} alt="Enrique Portela" />
+          <div className="hero-photo-vignette" />
+          <div className="hero-photo-tint" />
         </div>
-
-        {/* Photo */}
-        <div className="hero-idcard-photo-wrap">
-          <img src={profileImg} alt="Enrique Portela" className="hero-idcard-img" />
-          <div className="hero-idcard-photo-vignette" />
-        </div>
-
-        {/* Info */}
-        <div className="hero-idcard-body">
-          <div className="hero-idcard-surname">PORTELA</div>
-          <div className="hero-idcard-firstname">Enrique L.</div>
-          <div className="hero-idcard-divider" />
-          <div className="hero-idcard-role">Full Stack Developer</div>
-          <div className="hero-idcard-details">
-            <span className="hero-idcard-tag">Dev</span>
-            <span className="hero-idcard-tag">IT Infra</span>
-            <span className="hero-idcard-tag">Security</span>
-          </div>
-        </div>
-
-        {/* Footer barcode */}
-        <div className="hero-idcard-footer">
-          <div className="hero-idcard-barcode" />
-          <span className="hero-idcard-id">ID #EP-2025-DEV</span>
-        </div>
-
+        <div className="hero-photo-glow" />
       </div>
 
       {/* Desktop: mouse icon */}

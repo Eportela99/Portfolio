@@ -25,13 +25,15 @@ function getDeviceInfo() {
   else if (/Mac/.test(pf) || /Macintosh/.test(ua))   os = 'macOS'
   else if (/Linux/.test(pf))                          os = 'Linux'
 
-  // Physical resolution (CSS pixels × DPR)
+  // screen.width/height are CSS logical pixels per W3C spec — report as-is.
+  // Multiplying by DPR double-counts on Windows where some browsers already
+  // return physical pixels. Show DPR separately so users can do the math.
   const dpr = window.devicePixelRatio || 1
-  const physW = Math.round(screen.width  * dpr)
-  const physH = Math.round(screen.height * dpr)
-  const res   = `${physW}×${physH}`
+  const res  = `${screen.width}×${screen.height}`
 
-  const cores = navigator.hardwareConcurrency || 'N/A'
+  // hardwareConcurrency = logical threads (includes hyperthreading / SMT).
+  // Label as "Threads" so it's not confused with physical core count.
+  const threads = navigator.hardwareConcurrency || 'N/A'
 
   // GPU via WebGL — works on all major browsers incl. Safari
   let gpu = 'N/A'
@@ -51,7 +53,7 @@ function getDeviceInfo() {
   // Touch support
   const touch = navigator.maxTouchPoints > 0
 
-  return { browser, os, cores, dpr, res, gpu, touch }
+  return { browser, os, threads, dpr, res, gpu, touch }
 }
 
 /* ── Tests ───────────────────────────────────────────── */
@@ -211,7 +213,7 @@ export default function BrowserBenchmark() {
         <div className="bb-device-grid">
           <InfoItem label="Browser"    value={deviceInfo.browser} />
           <InfoItem label="OS"         value={deviceInfo.os} />
-          <InfoItem label="CPU Cores"  value={deviceInfo.cores} />
+          <InfoItem label="Threads"    value={deviceInfo.threads} />
           <InfoItem label="Resolution" value={`${deviceInfo.res} @${deviceInfo.dpr}×`} />
           <InfoItem label="Touch"      value={deviceInfo.touch ? 'Yes' : 'No'} />
           <InfoItem label="GPU"        value={deviceInfo.gpu} wide />

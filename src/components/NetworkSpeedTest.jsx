@@ -49,9 +49,11 @@ async function measureDownload() {
 async function measureUpload() {
   await fetch('/bench-ping.json?w=' + token(), { cache: 'no-store' })
 
-  // Fill the whole buffer with random data so compression can't shrink it
+  // crypto.getRandomValues is limited to 65536 bytes per call — fill in chunks
   const buf = new Uint8Array(UL_CHUNK)
-  crypto.getRandomValues(buf)
+  for (let i = 0; i < buf.length; i += 65536) {
+    crypto.getRandomValues(buf.subarray(i, i + 65536))
+  }
   const blob = new Blob([buf], { type: 'application/octet-stream' })
 
   const t0 = performance.now()

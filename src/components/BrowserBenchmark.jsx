@@ -171,7 +171,7 @@ export default function BrowserBenchmark() {
   const [status,  setStatus]  = useState('idle')  // idle | running | done
   const [phase,   setPhase]   = useState(null)
   const [results, setResults] = useState(null)
-  const [deviceInfo]          = useState(() => getDeviceInfo())
+  const [deviceInfo, setDeviceInfo] = useState(() => getDeviceInfo())
   const runningRef            = useRef(false)
 
   const runBenchmark = useCallback(async () => {
@@ -209,7 +209,12 @@ export default function BrowserBenchmark() {
 
       {/* ── Device Info ── */}
       <div className="bb-device-panel">
-        <div className="bb-device-title">Device Info</div>
+        <div className="bb-device-header">
+          <div className="bb-device-title">Device Info</div>
+          <button className="bb-refresh-btn" onClick={() => setDeviceInfo(getDeviceInfo())} title="Refresh">
+            ↻
+          </button>
+        </div>
         <div className="bb-device-grid">
           <InfoItem label="Browser"    value={deviceInfo.browser} />
           <InfoItem label="OS"         value={deviceInfo.os} />

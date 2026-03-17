@@ -1,13 +1,21 @@
 import './LiveTools.css'
 import BrowserBenchmark from './BrowserBenchmark'
+import NetworkSpeedTest from './NetworkSpeedTest'
 
 const TOOLS = [
   {
     id: 'benchmark',
     icon: '⚡',
     label: 'Browser Benchmark',
-    description: 'CPU, render FPS, download speed & latency — all in your browser',
+    description: 'CPU score, render FPS, download speed & latency — runs entirely in your browser',
     component: BrowserBenchmark,
+  },
+  {
+    id: 'speedtest',
+    icon: '🌐',
+    label: 'Network Speed Test',
+    description: 'Download & upload speed, ping, and jitter — tested against the edge server',
+    component: NetworkSpeedTest,
   },
 ]
 

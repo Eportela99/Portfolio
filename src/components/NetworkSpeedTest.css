@@ -1,0 +1,154 @@
+/* ══════════════════════════════════════
+   Network Speed Test
+══════════════════════════════════════ */
+
+.nst-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* ── Gauges ── */
+.nst-gauges {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.nst-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 130px;
+}
+
+.nst-gauge-svg {
+  width: 100%;
+  overflow: visible;
+}
+
+.nst-gauge-center {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.nst-gauge-val {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.nst-gauge-unit {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.nst-gauge-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+/* ── Stats row ── */
+.nst-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+}
+
+.nst-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+.nst-stat-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+.nst-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.nst-stat-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+.nst-stat-val {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.nst-stat-unit {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.nst-stat-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  border: 1px solid;
+  border-radius: 99px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+/* ── Button wrap ── */
+.nst-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* ══════════════════════════════════════
+   Responsive
+══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .nst-gauges {
+    gap: 1.5rem;
+  }
+
+  .nst-gauge { width: 110px; }
+  .nst-gauge-val { font-size: 1.2rem; }
+  .nst-gauge-center { top: 22px; }
+
+  .nst-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .nst-stat {
+    padding: 0.6rem 0.7rem;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .nst-stats { grid-template-columns: 1fr; }
+}

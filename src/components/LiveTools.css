@@ -1,0 +1,76 @@
+/* ══════════════════════════════════════
+   Live Tools Section
+══════════════════════════════════════ */
+
+.live-tools {
+  background: var(--bg-primary);
+}
+
+.lt-card {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.lt-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+}
+
+.lt-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.lt-card-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.lt-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.lt-card-desc {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.lt-card-body {
+  /* Benchmark component fills this */
+}
+
+@media (max-width: 640px) {
+  .lt-card {
+    padding: 1.4rem;
+  }
+
+  .lt-card-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+  }
+
+  .lt-card-icon {
+    font-size: 1.5rem;
+  }
+
+  .lt-card-title {
+    font-size: 1rem;
+  }
+}

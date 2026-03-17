@@ -1,62 +1,85 @@
 import { useState, useRef, useCallback } from 'react'
 import './NetworkSpeedTest.css'
 
-const DOWNLOAD_URL = '/bench.bin'           // 1 MB static file
+const DOWNLOAD_URL = '/bench-5m.bin'   // 5 MB per stream
 const PING_URL     = '/bench-ping.json'
 const UPLOAD_URL   = '/api/upload-test'
-const UPLOAD_SIZE  = 1 * 1024 * 1024       // 1 MB
+
+const DL_PARALLEL  = 4   // simultaneous download streams
+const UL_PARALLEL  = 4   // simultaneous upload streams
+const UL_CHUNK     = 1 * 1024 * 1024  // 1 MB per upload stream
 
 /* ── Tests ───────────────────────────────────────────── */
+
+/**
+ * Download: DL_PARALLEL concurrent fetches of DOWNLOAD_URL, each 5 MB.
+ * Measures wall-clock time from start to when all finish.
+ * Total bytes transferred / elapsed = actual throughput.
+ */
 async function measureDownload() {
-  const runs = []
-  // 3 runs for accuracy
-  for (let i = 0; i < 3; i++) {
-    const t0  = performance.now()
-    const res = await fetch(DOWNLOAD_URL + '?r=' + i + '&t=' + Date.now(), { cache: 'no-store' })
-    const buf = await res.arrayBuffer()
-    const ms  = performance.now() - t0
-    runs.push((buf.byteLength * 8) / (ms / 1000) / 1_000_000)
-  }
-  // Average of best 2
-  runs.sort((a, b) => b - a)
-  const mbps = (runs[0] + runs[1]) / 2
+  // Warm-up: one tiny ping to open a connection first
+  await fetch('/bench-ping.json?w=' + Date.now(), { cache: 'no-store' })
+
+  const t0 = performance.now()
+  const results = await Promise.all(
+    Array.from({ length: DL_PARALLEL }, (_, i) =>
+      fetch(DOWNLOAD_URL + '?s=' + i + '&t=' + Date.now(), { cache: 'no-store' })
+        .then(r => r.arrayBuffer())
+        .then(buf => buf.byteLength)
+    )
+  )
+  const elapsed    = (performance.now() - t0) / 1000          // seconds
+  const totalBytes = results.reduce((s, b) => s + b, 0)
+  const mbps       = (totalBytes * 8) / elapsed / 1_000_000
   return +mbps.toFixed(2)
 }
 
+/**
+ * Upload: UL_PARALLEL concurrent POST requests, each with UL_CHUNK bytes.
+ * Generate the payload once and reuse the same ArrayBuffer for all streams.
+ */
 async function measureUpload() {
-  // Generate 1 MB of random-ish bytes client-side (no static file needed)
-  const buf  = new Uint8Array(UPLOAD_SIZE)
-  crypto.getRandomValues(buf.slice(0, Math.min(65536, UPLOAD_SIZE))) // seed first 64KB
+  // Warm-up
+  await fetch('/bench-ping.json?w2=' + Date.now(), { cache: 'no-store' })
+
+  // Generate random-ish 1 MB payload (only randomize first 64 KB for speed)
+  const buf = new Uint8Array(UL_CHUNK)
+  crypto.getRandomValues(buf.slice(0, 65536))
   const blob = new Blob([buf], { type: 'application/octet-stream' })
 
-  const runs = []
-  for (let i = 0; i < 2; i++) {
-    const t0 = performance.now()
-    await fetch(UPLOAD_URL + '?r=' + i, {
-      method: 'POST',
-      body:   blob,
-      cache:  'no-store',
-    })
-    const ms = performance.now() - t0
-    runs.push((UPLOAD_SIZE * 8) / (ms / 1000) / 1_000_000)
-  }
-  const mbps = (runs[0] + runs[1]) / 2
+  const t0 = performance.now()
+  await Promise.all(
+    Array.from({ length: UL_PARALLEL }, (_, i) =>
+      fetch(UPLOAD_URL + '?s=' + i + '&t=' + Date.now(), {
+        method: 'POST',
+        body:   blob,
+        cache:  'no-store',
+      })
+    )
+  )
+  const elapsed    = (performance.now() - t0) / 1000
+  const totalBytes = UL_PARALLEL * UL_CHUNK
+  const mbps       = (totalBytes * 8) / elapsed / 1_000_000
   return +mbps.toFixed(2)
 }
 
+/**
+ * Ping + Jitter: 10 sequential tiny requests.
+ * Drop fastest + slowest, average the rest.
+ * Jitter = standard deviation of trimmed set.
+ */
 async function measurePingJitter() {
   const times = []
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 10; i++) {
     const t0 = performance.now()
     await fetch(PING_URL + '?t=' + Date.now() + i, { cache: 'no-store' })
     times.push(performance.now() - t0)
   }
   times.sort((a, b) => a - b)
-  // Drop fastest + slowest outliers
-  const trimmed = times.slice(1, 7)
+  const trimmed = times.slice(1, 9)  // drop min + max
   const avg     = trimmed.reduce((s, v) => s + v, 0) / trimmed.length
   const jitter  = Math.sqrt(
-    trimmed.reduce((s, v) => s + Math.pow(v - avg, 2), 0) / trimmed.length
+    trimmed.reduce((s, v) => s + (v - avg) ** 2, 0) / trimmed.length
   )
   return { ping: +avg.toFixed(1), jitter: +jitter.toFixed(1) }
 }
@@ -68,21 +91,18 @@ function dlQuality(mbps) {
   if (mbps >= 5)   return { label: 'OK',         color: '#fbbf24' }
   return              { label: 'Slow',      color: '#f87171' }
 }
-
 function ulQuality(mbps) {
   if (mbps >= 50)  return { label: 'Excellent', color: '#34d399' }
   if (mbps >= 10)  return { label: 'Good',      color: '#34d399' }
   if (mbps >= 2)   return { label: 'OK',         color: '#fbbf24' }
   return              { label: 'Slow',      color: '#f87171' }
 }
-
 function pingQuality(ms) {
   if (ms < 20)   return { label: 'Excellent', color: '#34d399' }
   if (ms < 60)   return { label: 'Good',      color: '#34d399' }
   if (ms < 150)  return { label: 'Average',   color: '#fbbf24' }
   return           { label: 'High',      color: '#f87171' }
 }
-
 function jitterQuality(ms) {
   if (ms < 5)   return { label: 'Stable',    color: '#34d399' }
   if (ms < 15)  return { label: 'Good',      color: '#34d399' }
@@ -90,45 +110,42 @@ function jitterQuality(ms) {
   return          { label: 'Unstable',  color: '#f87171' }
 }
 
-/* ── Gauge arc ───────────────────────────────────────── */
+/* ── SVG Gauge ───────────────────────────────────────── */
 function SpeedGauge({ value, max, color, label, unit }) {
-  const pct    = Math.min(1, (value ?? 0) / max)
-  const radius = 46
-  const circ   = Math.PI * radius          // half circle
-  const dash   = pct * circ
+  const pct  = Math.min(1, (value ?? 0) / max)
+  const R    = 46
+  const arc  = Math.PI * R   // half-circle circumference
+  const dash = pct * arc
 
   return (
     <div className="nst-gauge">
-      <svg viewBox="0 0 110 60" className="nst-gauge-svg">
-        {/* Track */}
-        <path
-          d={`M 7 55 A ${radius} ${radius} 0 0 1 103 55`}
-          fill="none"
-          stroke="rgba(255,255,255,0.07)"
-          strokeWidth="9"
-          strokeLinecap="round"
-        />
-        {/* Progress */}
-        <path
-          d={`M 7 55 A ${radius} ${radius} 0 0 1 103 55`}
+      <svg viewBox="0 0 110 62" className="nst-gauge-svg">
+        <path d={`M7,55 A${R},${R} 0 0,1 103,55`}
+          fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="9" strokeLinecap="round" />
+        <path d={`M7,55 A${R},${R} 0 0,1 103,55`}
           fill="none"
           stroke={color || '#374151'}
           strokeWidth="9"
           strokeLinecap="round"
-          strokeDasharray={`${dash} ${circ}`}
-          style={{ transition: 'stroke-dasharray 0.8s cubic-bezier(0.4,0,0.2,1), stroke 0.4s' }}
+          strokeDasharray={`${dash} ${arc}`}
+          style={{ transition: 'stroke-dasharray 0.9s cubic-bezier(0.4,0,0.2,1), stroke 0.4s' }}
         />
       </svg>
       <div className="nst-gauge-center">
-        <span className="nst-gauge-val">{value ?? '—'}</span>
-        {value != null && <span className="nst-gauge-unit">{unit}</span>}
+        {value != null
+          ? <>
+              <span className="nst-gauge-val">{value}</span>
+              <span className="nst-gauge-unit">{unit}</span>
+            </>
+          : <span className="nst-gauge-idle">—</span>
+        }
       </div>
       <div className="nst-gauge-label">{label}</div>
     </div>
   )
 }
 
-/* ── Stat pill ───────────────────────────────────────── */
+/* ── Stat Pill ───────────────────────────────────────── */
 function StatPill({ icon, label, value, unit, quality }) {
   return (
     <div className="nst-stat">
@@ -136,10 +153,12 @@ function StatPill({ icon, label, value, unit, quality }) {
       <div className="nst-stat-body">
         <span className="nst-stat-label">{label}</span>
         <span className="nst-stat-val">
-          {value != null ? <>{value}<span className="nst-stat-unit"> {unit}</span></> : '—'}
+          {value != null
+            ? <>{value}<span className="nst-stat-unit"> {unit}</span></>
+            : '—'}
         </span>
       </div>
-      {quality && (
+      {quality && value != null && (
         <span className="nst-stat-badge" style={{ color: quality.color, borderColor: quality.color }}>
           {quality.label}
         </span>
@@ -148,15 +167,29 @@ function StatPill({ icon, label, value, unit, quality }) {
   )
 }
 
-/* ── Phases ─────────────────────────────────────────── */
-const PHASES = ['ping', 'download', 'upload']
-const PHASE_LABEL = { ping: 'Testing latency', download: 'Measuring download', upload: 'Measuring upload' }
+/* ── Animated meter bar during test ─────────────────── */
+function LiveBar({ active, color }) {
+  return (
+    <div className="nst-live-bar">
+      <div className={`nst-live-fill ${active ? 'nst-live-fill--active' : ''}`}
+        style={{ '--bar-color': color }} />
+    </div>
+  )
+}
 
-/* ── Main Component ─────────────────────────────────── */
+/* ── Phases ─────────────────────────────────────────── */
+const PHASES  = ['ping', 'download', 'upload']
+const P_LABEL = {
+  ping:     'Measuring latency & jitter',
+  download: `Testing download (${DL_PARALLEL} parallel streams)`,
+  upload:   `Testing upload (${UL_PARALLEL} parallel streams)`,
+}
+
+/* ── Component ───────────────────────────────────────── */
 export default function NetworkSpeedTest() {
-  const [status,  setStatus]  = useState('idle')
-  const [phase,   setPhase]   = useState(null)
-  const [res,     setRes]     = useState(null)
+  const [status, setStatus] = useState('idle')
+  const [phase,  setPhase]  = useState(null)
+  const [res,    setRes]    = useState(null)
   const runRef = useRef(false)
 
   const runTest = useCallback(async () => {
@@ -189,8 +222,6 @@ export default function NetworkSpeedTest() {
 
   const dl = res?.download
   const ul = res?.upload
-  const ping   = res?.ping
-  const jitter = res?.jitter
 
   return (
     <div className="nst-wrap">
@@ -204,6 +235,9 @@ export default function NetworkSpeedTest() {
           label="Download"
           unit="Mbps"
         />
+        {phase === 'download' && status === 'running' && (
+          <LiveBar active color="#00d4ff" />
+        )}
         <SpeedGauge
           value={ul}
           max={200}
@@ -211,43 +245,31 @@ export default function NetworkSpeedTest() {
           label="Upload"
           unit="Mbps"
         />
+        {phase === 'upload' && status === 'running' && (
+          <LiveBar active color="#a78bfa" />
+        )}
       </div>
 
-      {/* ── Stats row ── */}
+      {/* ── Stats ── */}
       <div className="nst-stats">
-        <StatPill
-          icon="📡"
-          label="Ping"
-          value={ping}
-          unit="ms"
-          quality={ping != null ? pingQuality(ping) : null}
-        />
-        <StatPill
-          icon="📶"
-          label="Jitter"
-          value={jitter}
-          unit="ms"
-          quality={jitter != null ? jitterQuality(jitter) : null}
-        />
-        {dl != null && (
-          <StatPill
-            icon="⬇️"
-            label="Download"
-            value={dl}
-            unit="Mbps"
-            quality={dlQuality(dl)}
-          />
-        )}
-        {ul != null && (
-          <StatPill
-            icon="⬆️"
-            label="Upload"
-            value={ul}
-            unit="Mbps"
-            quality={ulQuality(ul)}
-          />
-        )}
+        <StatPill icon="📡" label="Ping"     value={res?.ping}   unit="ms"   quality={res?.ping   != null ? pingQuality(res.ping)     : null} />
+        <StatPill icon="📶" label="Jitter"   value={res?.jitter} unit="ms"   quality={res?.jitter != null ? jitterQuality(res.jitter) : null} />
+        <StatPill icon="⬇️" label="Download" value={dl}           unit="Mbps" quality={dl          != null ? dlQuality(dl)             : null} />
+        <StatPill icon="⬆️" label="Upload"   value={ul}           unit="Mbps" quality={ul          != null ? ulQuality(ul)             : null} />
       </div>
+
+      {/* ── Note ── */}
+      {status !== 'idle' && (
+        <p className="nst-note">
+          {status === 'running'
+            ? <>
+                <span className="bb-btn-spinner" style={{ width: 10, height: 10, marginRight: 6 }} />
+                {P_LABEL[phase] ?? '…'}
+              </>
+            : `Tested via ${DL_PARALLEL} parallel streams · ${DL_PARALLEL * 5} MB downloaded · ${UL_PARALLEL} MB uploaded`
+          }
+        </p>
+      )}
 
       {/* ── Button ── */}
       <div className="nst-btn-wrap">
@@ -256,12 +278,14 @@ export default function NetworkSpeedTest() {
           onClick={runTest}
           disabled={status === 'running'}
         >
-          {status === 'running' ? (
-            <><span className="bb-btn-spinner" /> {PHASE_LABEL[phase] ?? '…'}</>
-          ) : status === 'done' ? 'Test Again' : 'Start Speed Test'}
+          {status === 'running'
+            ? <><span className="bb-btn-spinner" /> Testing…</>
+            : status === 'done' ? 'Test Again' : 'Start Speed Test'}
         </button>
         {status === 'idle' && (
-          <p className="bb-disclaimer">Tests run to your Vercel edge server · ~10 seconds</p>
+          <p className="bb-disclaimer">
+            {DL_PARALLEL} parallel streams · {DL_PARALLEL * 5} MB download · {UL_PARALLEL} MB upload · ~15s
+          </p>
         )}
       </div>
 

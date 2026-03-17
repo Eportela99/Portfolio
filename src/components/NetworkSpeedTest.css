@@ -14,7 +14,9 @@
 .nst-gauges {
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  align-items: flex-start;
+  gap: 2.5rem;
+  flex-wrap: wrap;
 }
 
 .nst-gauge {
@@ -22,7 +24,7 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 130px;
+  width: 140px;
 }
 
 .nst-gauge-svg {
@@ -33,16 +35,15 @@
 .nst-gauge-center {
   position: absolute;
   top: 28px;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 2px;
 }
 
 .nst-gauge-val {
-  font-size: 1.55rem;
+  font-size: 1.7rem;
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1;
@@ -54,16 +55,48 @@
   font-weight: 600;
 }
 
+.nst-gauge-idle {
+  font-size: 1.5rem;
+  color: #4b5563;
+}
+
 .nst-gauge-label {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-top: 0.25rem;
+  margin-top: 0.2rem;
 }
 
-/* ── Stats row ── */
+/* ── Live bar (animated during test) ── */
+.nst-live-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: -0.3rem;
+}
+
+.nst-live-fill {
+  height: 100%;
+  width: 0;
+  background: var(--bar-color, var(--accent-cyan));
+  border-radius: 99px;
+}
+
+.nst-live-fill--active {
+  animation: nst-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes nst-pulse {
+  0%   { width: 0%;   opacity: 1; }
+  60%  { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0.2; }
+}
+
+/* ── Stats ── */
 .nst-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -73,7 +106,7 @@
 .nst-stat {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.65rem;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 12px;
@@ -87,6 +120,7 @@
   flex-direction: column;
   gap: 2px;
   flex: 1;
+  min-width: 0;
 }
 
 .nst-stat-label {
@@ -110,16 +144,28 @@
 }
 
 .nst-stat-badge {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 700;
   border: 1px solid;
   border-radius: 99px;
   padding: 2px 7px;
   white-space: nowrap;
+  flex-shrink: 0;
   opacity: 0.85;
 }
 
-/* ── Button wrap ── */
+/* ── Status note ── */
+.nst-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ── Button ── */
 .nst-btn-wrap {
   display: flex;
   flex-direction: column;
@@ -131,21 +177,17 @@
    Responsive
 ══════════════════════════════════════ */
 @media (max-width: 480px) {
-  .nst-gauges {
-    gap: 1.5rem;
-  }
+  .nst-gauges { gap: 1rem; }
 
-  .nst-gauge { width: 110px; }
-  .nst-gauge-val { font-size: 1.2rem; }
+  .nst-gauge { width: 115px; }
+  .nst-gauge-val { font-size: 1.3rem; }
   .nst-gauge-center { top: 22px; }
 
-  .nst-stats {
-    grid-template-columns: 1fr 1fr;
-  }
+  .nst-stats { grid-template-columns: 1fr 1fr; }
 
   .nst-stat {
     padding: 0.6rem 0.7rem;
-    gap: 0.5rem;
+    gap: 0.45rem;
   }
 }
 

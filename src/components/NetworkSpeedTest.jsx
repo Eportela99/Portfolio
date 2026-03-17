@@ -1,129 +1,106 @@
 import { useState, useRef, useCallback } from 'react'
 import './NetworkSpeedTest.css'
 
-const DOWNLOAD_URL = '/bench-5m.bin'   // 5 MB per stream
+const DOWNLOAD_URL = '/bench-5m.bin'
 const PING_URL     = '/bench-ping.json'
 const UPLOAD_URL   = '/api/upload-test'
+const UL_SIZE      = 512 * 1024   // 512 KB per upload stream
+const UL_STREAMS   = 3
+const DL_STREAMS   = 3
 
-const DL_PARALLEL  = 4   // simultaneous download streams
-const UL_PARALLEL  = 4   // simultaneous upload streams
-const UL_CHUNK     = 1 * 1024 * 1024  // 1 MB per upload stream
+const uid = () => Math.random().toString(36).slice(2)
 
-/* ── Tests ───────────────────────────────────────────── */
+/* ── Stream a fetch response and count bytes without buffering all in memory ── */
+async function streamBytes(url) {
+  const res = await fetch(url, { cache: 'no-store' })
+  if (!res.ok) throw new Error('HTTP ' + res.status)
 
-/**
- * Download: DL_PARALLEL concurrent fetches of DOWNLOAD_URL, each 5 MB.
- * Measures wall-clock time from start to when all finish.
- * Total bytes transferred / elapsed = actual throughput.
- */
-// Unique token per test run so Safari can't serve from cache
-const token = () => Math.random().toString(36).slice(2) + Date.now()
+  // Use ReadableStream (all modern browsers) to avoid a 5 MB ArrayBuffer spike
+  if (res.body?.getReader) {
+    const reader = res.body.getReader()
+    let bytes = 0
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      bytes += value?.byteLength ?? 0
+    }
+    return bytes
+  }
+  // Fallback (old Safari): ArrayBuffer is fine for a single stream
+  return (await res.arrayBuffer()).byteLength
+}
 
-// Sanity-check a measured Mbps — returns null if result looks like a cache hit
-function sanitize(mbps, totalBytes) {
-  if (!isFinite(mbps) || mbps <= 0) return null
-  // If Safari served from cache, the transfer completes in < 20ms for 5MB+.
-  // That equates to > ~2000 Mbps which is unreachable on consumer hardware.
-  if (mbps > 2000) return null
-  return +mbps.toFixed(2)
+/* ── Tests ── */
+async function measurePingJitter() {
+  const times = []
+  for (let i = 0; i < 8; i++) {
+    const t0 = performance.now()
+    await fetch(`${PING_URL}?${uid()}`, { cache: 'no-store' })
+    times.push(performance.now() - t0)
+  }
+  times.sort((a, b) => a - b)
+  const trimmed = times.slice(1, 7)   // drop min + max
+  const avg    = trimmed.reduce((s, v) => s + v, 0) / trimmed.length
+  const jitter = Math.sqrt(trimmed.reduce((s, v) => s + (v - avg) ** 2, 0) / trimmed.length)
+  return { ping: +avg.toFixed(1), jitter: +jitter.toFixed(1) }
 }
 
 async function measureDownload() {
-  // Warm-up: open a connection first so we don't measure TCP handshake
-  await fetch('/bench-ping.json?w=' + token(), { cache: 'no-store' })
+  // Single warm-up to open connection
+  await fetch(`${PING_URL}?w=${uid()}`, { cache: 'no-store' })
 
   const t0 = performance.now()
-  const sizes = await Promise.all(
-    Array.from({ length: DL_PARALLEL }, () =>
-      fetch(DOWNLOAD_URL + '?' + token(), { cache: 'no-store' })
-        .then(r => r.arrayBuffer())
-        .then(buf => buf.byteLength)
-    )
+  const byteCounts = await Promise.all(
+    Array.from({ length: DL_STREAMS }, () => streamBytes(`${DOWNLOAD_URL}?${uid()}`))
   )
   const elapsed    = (performance.now() - t0) / 1000
-  const totalBytes = sizes.reduce((s, b) => s + b, 0)
+  const totalBytes = byteCounts.reduce((s, b) => s + b, 0)
   const mbps       = (totalBytes * 8) / elapsed / 1_000_000
-  return sanitize(mbps, totalBytes)
+
+  if (!isFinite(mbps) || mbps <= 0 || mbps > 2000) return null
+  return +mbps.toFixed(2)
 }
 
 async function measureUpload() {
-  await fetch('/bench-ping.json?w=' + token(), { cache: 'no-store' })
+  await fetch(`${PING_URL}?w=${uid()}`, { cache: 'no-store' })
 
-  // crypto.getRandomValues is limited to 65536 bytes per call — fill in chunks
-  const buf = new Uint8Array(UL_CHUNK)
+  // Build upload payload in 65536-byte chunks (browser crypto limit)
+  const buf = new Uint8Array(UL_SIZE)
   for (let i = 0; i < buf.length; i += 65536) {
-    crypto.getRandomValues(buf.subarray(i, i + 65536))
+    crypto.getRandomValues(buf.subarray(i, Math.min(i + 65536, buf.length)))
   }
-  const blob = new Blob([buf], { type: 'application/octet-stream' })
 
   const t0 = performance.now()
   await Promise.all(
-    Array.from({ length: UL_PARALLEL }, () =>
-      fetch(UPLOAD_URL + '?' + token(), {
+    Array.from({ length: UL_STREAMS }, () =>
+      fetch(`${UPLOAD_URL}?${uid()}`, {
         method: 'POST',
-        body:   blob.slice(0),   // force a fresh read each time
+        body:   new Blob([buf]),
         cache:  'no-store',
       })
     )
   )
   const elapsed    = (performance.now() - t0) / 1000
-  const totalBytes = UL_PARALLEL * UL_CHUNK
+  const totalBytes = UL_STREAMS * UL_SIZE
   const mbps       = (totalBytes * 8) / elapsed / 1_000_000
-  return sanitize(mbps, totalBytes)
+
+  if (!isFinite(mbps) || mbps <= 0 || mbps > 2000) return null
+  return +mbps.toFixed(2)
 }
 
-/**
- * Ping + Jitter: 10 sequential tiny requests.
- * Drop fastest + slowest, average the rest.
- * Jitter = standard deviation of trimmed set.
- */
-async function measurePingJitter() {
-  const times = []
-  for (let i = 0; i < 10; i++) {
-    const t0 = performance.now()
-    await fetch(PING_URL + '?t=' + Date.now() + i, { cache: 'no-store' })
-    times.push(performance.now() - t0)
-  }
-  times.sort((a, b) => a - b)
-  const trimmed = times.slice(1, 9)  // drop min + max
-  const avg     = trimmed.reduce((s, v) => s + v, 0) / trimmed.length
-  const jitter  = Math.sqrt(
-    trimmed.reduce((s, v) => s + (v - avg) ** 2, 0) / trimmed.length
-  )
-  return { ping: +avg.toFixed(1), jitter: +jitter.toFixed(1) }
+/* ── Quality labels ── */
+const quality = {
+  dl:     (v) => v >= 100 ? ['Excellent','#34d399'] : v >= 25 ? ['Good','#34d399'] : v >= 5 ? ['OK','#fbbf24'] : ['Slow','#f87171'],
+  ul:     (v) => v >= 50  ? ['Excellent','#34d399'] : v >= 10 ? ['Good','#34d399'] : v >= 2 ? ['OK','#fbbf24'] : ['Slow','#f87171'],
+  ping:   (v) => v < 20   ? ['Excellent','#34d399'] : v < 60  ? ['Good','#34d399'] : v < 150 ? ['Average','#fbbf24'] : ['High','#f87171'],
+  jitter: (v) => v < 5    ? ['Stable',  '#34d399'] : v < 15  ? ['Good','#34d399'] : v < 40  ? ['Variable','#fbbf24'] : ['Unstable','#f87171'],
 }
 
-/* ── Quality helpers ─────────────────────────────────── */
-function dlQuality(mbps) {
-  if (mbps >= 100) return { label: 'Excellent', color: '#34d399' }
-  if (mbps >= 25)  return { label: 'Good',      color: '#34d399' }
-  if (mbps >= 5)   return { label: 'OK',         color: '#fbbf24' }
-  return              { label: 'Slow',      color: '#f87171' }
-}
-function ulQuality(mbps) {
-  if (mbps >= 50)  return { label: 'Excellent', color: '#34d399' }
-  if (mbps >= 10)  return { label: 'Good',      color: '#34d399' }
-  if (mbps >= 2)   return { label: 'OK',         color: '#fbbf24' }
-  return              { label: 'Slow',      color: '#f87171' }
-}
-function pingQuality(ms) {
-  if (ms < 20)   return { label: 'Excellent', color: '#34d399' }
-  if (ms < 60)   return { label: 'Good',      color: '#34d399' }
-  if (ms < 150)  return { label: 'Average',   color: '#fbbf24' }
-  return           { label: 'High',      color: '#f87171' }
-}
-function jitterQuality(ms) {
-  if (ms < 5)   return { label: 'Stable',    color: '#34d399' }
-  if (ms < 15)  return { label: 'Good',      color: '#34d399' }
-  if (ms < 40)  return { label: 'Variable',  color: '#fbbf24' }
-  return          { label: 'Unstable',  color: '#f87171' }
-}
-
-/* ── SVG Gauge ───────────────────────────────────────── */
-function SpeedGauge({ value, max, color, label, unit }) {
+/* ── SVG half-circle gauge ── */
+function Gauge({ value, max, color, label, unit }) {
   const pct  = Math.min(1, (value ?? 0) / max)
   const R    = 46
-  const arc  = Math.PI * R   // half-circle circumference
+  const arc  = Math.PI * R
   const dash = pct * arc
 
   return (
@@ -133,7 +110,7 @@ function SpeedGauge({ value, max, color, label, unit }) {
           fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="9" strokeLinecap="round" />
         <path d={`M7,55 A${R},${R} 0 0,1 103,55`}
           fill="none"
-          stroke={color || '#374151'}
+          stroke={color ?? '#374151'}
           strokeWidth="9"
           strokeLinecap="round"
           strokeDasharray={`${dash} ${arc}`}
@@ -142,145 +119,100 @@ function SpeedGauge({ value, max, color, label, unit }) {
       </svg>
       <div className="nst-gauge-center">
         {value != null
-          ? <>
-              <span className="nst-gauge-val">{value}</span>
-              <span className="nst-gauge-unit">{unit}</span>
-            </>
-          : <span className="nst-gauge-idle">—</span>
-        }
+          ? <><span className="nst-gauge-val">{value}</span><span className="nst-gauge-unit">{unit}</span></>
+          : <span className="nst-gauge-idle">—</span>}
       </div>
       <div className="nst-gauge-label">{label}</div>
     </div>
   )
 }
 
-/* ── Stat Pill ───────────────────────────────────────── */
-function StatPill({ icon, label, value, unit, quality }) {
+/* ── Stat pill ── */
+function Pill({ icon, label, value, unit, q }) {
+  const [qlabel, qcolor] = q && value != null ? q(value) : []
   return (
     <div className="nst-stat">
       <span className="nst-stat-icon">{icon}</span>
       <div className="nst-stat-body">
         <span className="nst-stat-label">{label}</span>
         <span className="nst-stat-val">
-          {value != null
-            ? <>{value}<span className="nst-stat-unit"> {unit}</span></>
-            : '—'}
+          {value != null ? <>{value}<span className="nst-stat-unit"> {unit}</span></> : '—'}
         </span>
       </div>
-      {quality && value != null && (
-        <span className="nst-stat-badge" style={{ color: quality.color, borderColor: quality.color }}>
-          {quality.label}
-        </span>
-      )}
+      {qlabel && <span className="nst-stat-badge" style={{ color: qcolor, borderColor: qcolor }}>{qlabel}</span>}
     </div>
   )
 }
 
-/* ── Animated meter bar during test ─────────────────── */
-function LiveBar({ active, color }) {
-  return (
-    <div className="nst-live-bar">
-      <div className={`nst-live-fill ${active ? 'nst-live-fill--active' : ''}`}
-        style={{ '--bar-color': color }} />
-    </div>
-  )
-}
-
-/* ── Phases ─────────────────────────────────────────── */
-const PHASES  = ['ping', 'download', 'upload']
-const P_LABEL = {
-  ping:     'Measuring latency & jitter',
-  download: `Testing download (${DL_PARALLEL} parallel streams)`,
-  upload:   `Testing upload (${UL_PARALLEL} parallel streams)`,
-}
-
-/* ── Component ───────────────────────────────────────── */
+/* ── Main ── */
 export default function NetworkSpeedTest() {
   const [status, setStatus] = useState('idle')
   const [phase,  setPhase]  = useState(null)
   const [res,    setRes]    = useState(null)
-  const runRef = useRef(false)
+  const [error,  setError]  = useState(null)
+  const busy = useRef(false)
 
   const runTest = useCallback(async () => {
-    if (runRef.current) return
-    runRef.current = true
+    if (busy.current) return
+    busy.current = true
     setStatus('running')
     setRes(null)
+    setError(null)
 
-    const safe = async (fn) => { try { return await fn() } catch { return null } }
+    try {
+      const safe = async (fn) => { try { return await fn() } catch (e) { console.warn(e); return null } }
 
-    setPhase('ping')
-    const pingData = await safe(measurePingJitter)
+      setPhase('ping')
+      const pingData = await safe(measurePingJitter)
 
-    setPhase('download')
-    const dlMbps = await safe(measureDownload)
+      setPhase('download')
+      const dl = await safe(measureDownload)
 
-    setPhase('upload')
-    const ulMbps = await safe(measureUpload)
+      setPhase('upload')
+      const ul = await safe(measureUpload)
 
-    setRes({
-      ping:     pingData?.ping   ?? null,
-      jitter:   pingData?.jitter ?? null,
-      download: dlMbps,
-      upload:   ulMbps,
-    })
-    setStatus('done')
-    setPhase(null)
-    runRef.current = false
+      setRes({ ping: pingData?.ping ?? null, jitter: pingData?.jitter ?? null, dl, ul })
+      setStatus('done')
+    } catch (e) {
+      console.error(e)
+      setError('Test failed — check your connection and try again.')
+      setStatus('idle')
+    } finally {
+      setPhase(null)
+      busy.current = false
+    }
   }, [])
 
-  const dl = res?.download
-  const ul = res?.upload
+  const phaseLabel = {
+    ping:     'Measuring latency…',
+    download: 'Measuring download…',
+    upload:   'Measuring upload…',
+  }
 
   return (
     <div className="nst-wrap">
 
-      {/* ── Gauges ── */}
       <div className="nst-gauges">
-        <SpeedGauge
-          value={dl}
-          max={500}
-          color={dl ? dlQuality(dl).color : undefined}
-          label="Download"
-          unit="Mbps"
-        />
-        {phase === 'download' && status === 'running' && (
-          <LiveBar active color="#00d4ff" />
-        )}
-        <SpeedGauge
-          value={ul}
-          max={200}
-          color={ul ? ulQuality(ul).color : undefined}
-          label="Upload"
-          unit="Mbps"
-        />
-        {phase === 'upload' && status === 'running' && (
-          <LiveBar active color="#a78bfa" />
-        )}
+        <Gauge value={res?.dl} max={500} color={res?.dl != null ? quality.dl(res.dl)[1] : undefined} label="Download" unit="Mbps" />
+        <Gauge value={res?.ul} max={200} color={res?.ul != null ? quality.ul(res.ul)[1] : undefined} label="Upload"   unit="Mbps" />
       </div>
 
-      {/* ── Stats ── */}
       <div className="nst-stats">
-        <StatPill icon="📡" label="Ping"     value={res?.ping}   unit="ms"   quality={res?.ping   != null ? pingQuality(res.ping)     : null} />
-        <StatPill icon="📶" label="Jitter"   value={res?.jitter} unit="ms"   quality={res?.jitter != null ? jitterQuality(res.jitter) : null} />
-        <StatPill icon="⬇️" label="Download" value={dl}           unit="Mbps" quality={dl          != null ? dlQuality(dl)             : null} />
-        <StatPill icon="⬆️" label="Upload"   value={ul}           unit="Mbps" quality={ul          != null ? ulQuality(ul)             : null} />
+        <Pill icon="📡" label="Ping"     value={res?.ping}   unit="ms"   q={quality.ping}   />
+        <Pill icon="📶" label="Jitter"   value={res?.jitter} unit="ms"   q={quality.jitter} />
+        <Pill icon="⬇️" label="Download" value={res?.dl}     unit="Mbps" q={quality.dl}     />
+        <Pill icon="⬆️" label="Upload"   value={res?.ul}     unit="Mbps" q={quality.ul}     />
       </div>
 
-      {/* ── Note ── */}
-      {status !== 'idle' && (
+      {status === 'running' && (
         <p className="nst-note">
-          {status === 'running'
-            ? <>
-                <span className="bb-btn-spinner" style={{ width: 10, height: 10, marginRight: 6 }} />
-                {P_LABEL[phase] ?? '…'}
-              </>
-            : `Tested via ${DL_PARALLEL} parallel streams · ${DL_PARALLEL * 5} MB downloaded · ${UL_PARALLEL} MB uploaded`
-          }
+          <span className="bb-btn-spinner" style={{ width: 10, height: 10 }} />
+          {phaseLabel[phase] ?? '…'}
         </p>
       )}
 
-      {/* ── Button ── */}
+      {error && <p className="nst-error">{error}</p>}
+
       <div className="nst-btn-wrap">
         <button
           className={`bb-btn ${status === 'running' ? 'bb-btn--running' : ''}`}
@@ -291,10 +223,8 @@ export default function NetworkSpeedTest() {
             ? <><span className="bb-btn-spinner" /> Testing…</>
             : status === 'done' ? 'Test Again' : 'Start Speed Test'}
         </button>
-        {status === 'idle' && (
-          <p className="bb-disclaimer">
-            {DL_PARALLEL} parallel streams · {DL_PARALLEL * 5} MB download · {UL_PARALLEL} MB upload · ~15s
-          </p>
+        {status === 'idle' && !error && (
+          <p className="bb-disclaimer">{DL_STREAMS} parallel streams · {(DL_STREAMS * 5).toFixed(0)} MB download · ~15s</p>
         )}
       </div>
 

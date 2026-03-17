@@ -165,6 +165,13 @@
   gap: 6px;
 }
 
+/* ── Error ── */
+.nst-error {
+  font-size: 0.78rem;
+  color: #f87171;
+  text-align: center;
+}
+
 /* ── Button ── */
 .nst-btn-wrap {
   display: flex;

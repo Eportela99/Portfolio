@@ -10,76 +10,20 @@
   gap: 1.4rem;
 }
 
-/* ── Device panel ── */
-.bb-device-panel {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px;
-  padding: 1.1rem 1.3rem;
-}
-
-.bb-device-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-}
-
-.bb-device-title {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent-cyan);
-}
-
-.bb-refresh-btn {
-  background: none;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 6px;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  line-height: 1;
-  padding: 2px 7px;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, transform 0.3s;
-}
-
-.bb-refresh-btn:hover {
-  color: var(--accent-cyan);
-  border-color: rgba(0,212,255,0.35);
-  transform: rotate(180deg);
-}
-
-.bb-device-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.55rem 1rem;
-}
-
-.bb-di { display: flex; flex-direction: column; gap: 2px; }
-.bb-di--wide { grid-column: 1 / -1; }
-
-.bb-di-label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.bb-di-val {
-  font-size: 0.84rem;
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.bb-di-val--sm {
-  font-size: 0.76rem;
+/* ── Description ── */
+.bb-desc {
+  font-size: 0.83rem;
   color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.65;
+  padding: 0.9rem 1.1rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+}
+
+.bb-desc strong {
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 /* ── Score layout ── */

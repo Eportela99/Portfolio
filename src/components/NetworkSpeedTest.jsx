@@ -16,43 +16,50 @@ const UL_CHUNK     = 1 * 1024 * 1024  // 1 MB per upload stream
  * Measures wall-clock time from start to when all finish.
  * Total bytes transferred / elapsed = actual throughput.
  */
+// Unique token per test run so Safari can't serve from cache
+const token = () => Math.random().toString(36).slice(2) + Date.now()
+
+// Sanity-check a measured Mbps — returns null if result looks like a cache hit
+function sanitize(mbps, totalBytes) {
+  if (!isFinite(mbps) || mbps <= 0) return null
+  // If Safari served from cache, the transfer completes in < 20ms for 5MB+.
+  // That equates to > ~2000 Mbps which is unreachable on consumer hardware.
+  if (mbps > 2000) return null
+  return +mbps.toFixed(2)
+}
+
 async function measureDownload() {
-  // Warm-up: one tiny ping to open a connection first
-  await fetch('/bench-ping.json?w=' + Date.now(), { cache: 'no-store' })
+  // Warm-up: open a connection first so we don't measure TCP handshake
+  await fetch('/bench-ping.json?w=' + token(), { cache: 'no-store' })
 
   const t0 = performance.now()
-  const results = await Promise.all(
-    Array.from({ length: DL_PARALLEL }, (_, i) =>
-      fetch(DOWNLOAD_URL + '?s=' + i + '&t=' + Date.now(), { cache: 'no-store' })
+  const sizes = await Promise.all(
+    Array.from({ length: DL_PARALLEL }, () =>
+      fetch(DOWNLOAD_URL + '?' + token(), { cache: 'no-store' })
         .then(r => r.arrayBuffer())
         .then(buf => buf.byteLength)
     )
   )
-  const elapsed    = (performance.now() - t0) / 1000          // seconds
-  const totalBytes = results.reduce((s, b) => s + b, 0)
+  const elapsed    = (performance.now() - t0) / 1000
+  const totalBytes = sizes.reduce((s, b) => s + b, 0)
   const mbps       = (totalBytes * 8) / elapsed / 1_000_000
-  return +mbps.toFixed(2)
+  return sanitize(mbps, totalBytes)
 }
 
-/**
- * Upload: UL_PARALLEL concurrent POST requests, each with UL_CHUNK bytes.
- * Generate the payload once and reuse the same ArrayBuffer for all streams.
- */
 async function measureUpload() {
-  // Warm-up
-  await fetch('/bench-ping.json?w2=' + Date.now(), { cache: 'no-store' })
+  await fetch('/bench-ping.json?w=' + token(), { cache: 'no-store' })
 
-  // Generate random-ish 1 MB payload (only randomize first 64 KB for speed)
+  // Fill the whole buffer with random data so compression can't shrink it
   const buf = new Uint8Array(UL_CHUNK)
-  crypto.getRandomValues(buf.slice(0, 65536))
+  crypto.getRandomValues(buf)
   const blob = new Blob([buf], { type: 'application/octet-stream' })
 
   const t0 = performance.now()
   await Promise.all(
-    Array.from({ length: UL_PARALLEL }, (_, i) =>
-      fetch(UPLOAD_URL + '?s=' + i + '&t=' + Date.now(), {
+    Array.from({ length: UL_PARALLEL }, () =>
+      fetch(UPLOAD_URL + '?' + token(), {
         method: 'POST',
-        body:   blob,
+        body:   blob.slice(0),   // force a fresh read each time
         cache:  'no-store',
       })
     )
@@ -60,7 +67,7 @@ async function measureUpload() {
   const elapsed    = (performance.now() - t0) / 1000
   const totalBytes = UL_PARALLEL * UL_CHUNK
   const mbps       = (totalBytes * 8) / elapsed / 1_000_000
-  return +mbps.toFixed(2)
+  return sanitize(mbps, totalBytes)
 }
 
 /**

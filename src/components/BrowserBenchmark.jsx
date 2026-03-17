@@ -1,60 +1,8 @@
-import { useState, useRef, useCallback } from 'react'
+import { useRef, useCallback, useState } from 'react'
 import './BrowserBenchmark.css'
 
 const BENCH_BIN  = '/bench.bin'
 const BENCH_PING = '/bench-ping.json'
-
-/* ── Device Info ─────────────────────────────────────── */
-function getDeviceInfo() {
-  const ua  = navigator.userAgent
-  const pf  = navigator.platform || ''
-
-  // Browser — order matters (Edge/OPR before Chrome, Chrome before Safari)
-  let browser = 'Unknown'
-  if (/Edg\//.test(ua))        browser = 'Edge'
-  else if (/OPR\//.test(ua))   browser = 'Opera'
-  else if (/Chrome\//.test(ua))browser = 'Chrome'
-  else if (/Firefox\//.test(ua))browser = 'Firefox'
-  else if (/Safari\//.test(ua)) browser = 'Safari'
-
-  // OS — check platform + UA
-  let os = 'Unknown'
-  if (/Win/.test(pf) || /Windows NT/.test(ua))       os = 'Windows'
-  else if (/iPhone|iPad/.test(ua))                    os = 'iOS'
-  else if (/Android/.test(ua))                        os = 'Android'
-  else if (/Mac/.test(pf) || /Macintosh/.test(ua))   os = 'macOS'
-  else if (/Linux/.test(pf))                          os = 'Linux'
-
-  // screen.width/height are CSS logical pixels per W3C spec — report as-is.
-  // Multiplying by DPR double-counts on Windows where some browsers already
-  // return physical pixels. Show DPR separately so users can do the math.
-  const dpr = window.devicePixelRatio || 1
-  const res  = `${screen.width}×${screen.height}`
-
-  // hardwareConcurrency = logical threads (includes hyperthreading / SMT).
-  // Label as "Threads" so it's not confused with physical core count.
-  const threads = navigator.hardwareConcurrency || 'N/A'
-
-  // GPU via WebGL — works on all major browsers incl. Safari
-  let gpu = 'N/A'
-  try {
-    const canvas = document.createElement('canvas')
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
-    if (gl) {
-      const ext = gl.getExtension('WEBGL_debug_renderer_info')
-      if (ext) {
-        const raw = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) || ''
-        // Clean up: remove trailing "(0x...)" vendor codes
-        gpu = raw.replace(/\s*\(0x[0-9a-fA-F]+\)/g, '').trim() || 'N/A'
-      }
-    }
-  } catch (_) {}
-
-  // Touch support
-  const touch = navigator.maxTouchPoints > 0
-
-  return { browser, os, threads, dpr, res, gpu, touch }
-}
 
 /* ── Tests ───────────────────────────────────────────── */
 function runCPUTest() {
@@ -171,7 +119,6 @@ export default function BrowserBenchmark() {
   const [status,  setStatus]  = useState('idle')  // idle | running | done
   const [phase,   setPhase]   = useState(null)
   const [results, setResults] = useState(null)
-  const [deviceInfo, setDeviceInfo] = useState(() => getDeviceInfo())
   const runningRef            = useRef(false)
 
   const runBenchmark = useCallback(async () => {
@@ -207,22 +154,11 @@ export default function BrowserBenchmark() {
   return (
     <div className="bb-wrap">
 
-      {/* ── Device Info ── */}
-      <div className="bb-device-panel">
-        <div className="bb-device-header">
-          <div className="bb-device-title">Device Info</div>
-          <button className="bb-refresh-btn" onClick={() => setDeviceInfo(getDeviceInfo())} title="Refresh">
-            ↻
-          </button>
-        </div>
-        <div className="bb-device-grid">
-          <InfoItem label="Browser"    value={deviceInfo.browser} />
-          <InfoItem label="OS"         value={deviceInfo.os} />
-          <InfoItem label="Threads"    value={deviceInfo.threads} />
-          <InfoItem label="Resolution" value={`${deviceInfo.res} @${deviceInfo.dpr}×`} />
-          <InfoItem label="Touch"      value={deviceInfo.touch ? 'Yes' : 'No'} />
-          <InfoItem label="GPU"        value={deviceInfo.gpu} wide />
-        </div>
+      {/* ── Description ── */}
+      <div className="bb-desc">
+        Runs four tests entirely in your browser — <strong>CPU</strong> (math operations per second),{' '}
+        <strong>Render FPS</strong> (canvas animation speed), <strong>Download</strong> (fetch throughput),
+        and <strong>Latency</strong> (round-trip to the server). No data is sent anywhere.
       </div>
 
       {/* ── Scores ── */}
@@ -323,11 +259,3 @@ export default function BrowserBenchmark() {
   )
 }
 
-function InfoItem({ label, value, wide }) {
-  return (
-    <div className={`bb-di ${wide ? 'bb-di--wide' : ''}`}>
-      <span className="bb-di-label">{label}</span>
-      <span className={`bb-di-val ${wide ? 'bb-di-val--sm' : ''}`}>{value}</span>
-    </div>
-  )
-}

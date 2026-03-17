@@ -1,199 +1,156 @@
 /* ══════════════════════════════════════
-   Tech Stack — Grouped Category Cards
+   Tech Stack — Infinite Marquee
 ══════════════════════════════════════ */
 .skills {
   background: var(--bg-secondary);
+  overflow: hidden;
 }
 
-/* 2×2 grid on desktop, 1 col on mobile */
-.sk-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-top: 0.5rem;
+/* Full-bleed marquee wrapper — outside .container */
+.sk-marquee-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0.5rem 0 1rem;
+  /* Fade edges */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
 }
 
-/* ── Category card ── */
-.sk-card {
+/* ── Single row ── */
+.sk-marquee-row {
+  overflow: hidden;
+  width: 100%;
+}
+
+.sk-marquee-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: marquee-left linear infinite;
+}
+
+.sk-marquee-reverse {
+  animation-name: marquee-right;
+}
+
+/* Pause on hover */
+.sk-marquee-row:hover .sk-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── Skill badge ── */
+.sk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  position: relative;
-}
-
-/* Left accent bar */
-.sk-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: var(--cat-accent);
-  opacity: 0.7;
-  border-radius: 0;
-  transition: opacity 0.3s ease;
-}
-
-.sk-card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--cat-accent) 40%, transparent);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--cat-accent) 15%, transparent),
-    0 12px 40px rgba(0, 0, 0, 0.35),
-    0 0 30px color-mix(in srgb, var(--cat-accent) 8%, transparent);
-}
-
-.sk-card:hover::before {
-  opacity: 1;
-}
-
-/* ── Card header ── */
-.sk-card-header {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 1.1rem 1.4rem 0.9rem;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.sk-cat-icon {
-  font-size: 1.15rem;
-  line-height: 1;
-}
-
-.sk-cat-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--cat-accent);
-  letter-spacing: 0.02em;
-  flex: 1;
-}
-
-.sk-cat-count {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--cat-accent);
-  background: color-mix(in srgb, var(--cat-accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--cat-accent) 28%, transparent);
   border-radius: 99px;
-  padding: 1px 8px;
-  opacity: 0.85;
-}
-
-/* ── Skill items grid inside card ── */
-.sk-card-body {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0;
-}
-
-/* ── Single skill item ── */
-.sk-item {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.75rem 1.1rem;
-  border-right: 1px solid var(--glass-border);
-  border-bottom: 1px solid var(--glass-border);
-  transition: background 0.2s ease;
+  white-space: nowrap;
   cursor: default;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  flex-shrink: 0;
 }
 
-/* Remove right border on even items (right column) */
-.sk-item:nth-child(2n) {
-  border-right: none;
+.sk-badge:hover {
+  border-color: rgba(0, 212, 255, 0.45);
+  background: rgba(0, 212, 255, 0.06);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.12);
 }
 
-/* Remove bottom border on last row */
-.sk-item:nth-last-child(-n+2) {
-  border-bottom: none;
-}
-
-/* If odd total, last item also loses bottom border */
-.sk-item:last-child {
-  border-bottom: none;
-}
-
-.sk-item:hover {
-  background: color-mix(in srgb, var(--cat-accent) 6%, transparent);
-}
-
-.sk-item:hover .sk-item-icon,
-.sk-item:hover .sk-item-img {
-  filter: drop-shadow(0 0 6px var(--cat-accent));
-}
-
-.sk-item-icon {
-  font-size: 1.5rem;
+.sk-badge-icon {
+  font-size: 1.25rem;
+  line-height: 1;
   flex-shrink: 0;
   transition: filter 0.25s ease;
 }
 
-.sk-item-img {
-  width: 1.5rem;
-  height: 1.5rem;
+.sk-badge-img {
+  width: 1.25rem;
+  height: 1.25rem;
   object-fit: contain;
   flex-shrink: 0;
   transition: filter 0.25s ease;
 }
 
-.sk-item-emoji {
-  font-size: 1.4rem;
-  flex-shrink: 0;
+.sk-badge-emoji {
+  font-size: 1.15rem;
   line-height: 1;
-  width: 1.5rem;
+  flex-shrink: 0;
+  width: 1.25rem;
   text-align: center;
 }
 
-.sk-item-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
+.sk-badge:hover .sk-badge-icon,
+.sk-badge:hover .sk-badge-img {
+  filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.6));
 }
 
-.sk-item-name {
-  font-size: 0.82rem;
-  font-weight: 700;
+.sk-badge-name {
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.2;
-  white-space: nowrap;
-}
-
-.sk-item-sub {
-  font-size: 0.62rem;
-  color: var(--text-secondary);
-  opacity: 0.65;
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
 }
 
 /* ── Responsive ── */
-@media (max-width: 860px) {
-  .sk-grid {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
+@media (max-width: 768px) {
+  .sk-marquee-wrap {
+    gap: 10px;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 5%,
+      black 95%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 5%,
+      black 95%,
+      transparent 100%
+    );
   }
-}
 
-@media (max-width: 480px) {
-  .sk-card-header {
-    padding: 0.9rem 1.1rem 0.75rem;
+  .sk-badge {
+    padding: 7px 13px;
+    gap: 7px;
   }
 
-  .sk-item {
-    padding: 0.65rem 0.9rem;
+  .sk-badge-icon,
+  .sk-badge-img,
+  .sk-badge-emoji {
+    font-size: 1.1rem;
+    width: 1.1rem;
+    height: 1.1rem;
   }
 
-  .sk-item-icon,
-  .sk-item-img {
-    font-size: 1.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
+  .sk-badge-name {
+    font-size: 0.8rem;
   }
 }

@@ -5,8 +5,10 @@ import comptiaImg    from '../assets/certs/comptia-aplus-1.png'
 import windowsImg   from '../assets/certs/windows-os-1.png'
 import photoshopImg from '../assets/certs/photoshop-1.png'
 import illustratorImg from '../assets/certs/illustrator-1.png'
+import degreeImg      from '../assets/certs/degree.png'
 
 const CERTS = [
+  { img: degreeImg,      title: 'B.S. Computer Science', issuer: 'Florida International University' },
   { img: comptiaImg,     title: 'CompTIA A+',          issuer: 'CompTIA' },
   { img: windowsImg,     title: 'Windows OS',          issuer: 'Microsoft / Certiport' },
   { img: photoshopImg,   title: 'Adobe Photoshop CS6', issuer: 'Adobe / Certiport' },

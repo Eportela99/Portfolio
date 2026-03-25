@@ -4,10 +4,7 @@
 
 /* ── Featured project ── */
 .featured-project {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
+  display: block;
   padding: 2.5rem;
   margin-bottom: 3.5rem;
   position: relative;
@@ -111,28 +108,6 @@
   transform: translateY(-1px);
 }
 
-/* Screenshot image */
-.featured-img-wrap {
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
-  line-height: 0;
-  height: 320px;
-}
-
-.featured-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top left;
-  display: block;
-}
-
-/* Reversed featured layout */
-.featured-project-rev {
-  grid-template-columns: 1fr 1fr;
-}
 
 .project-link {
   color: var(--text-muted);
@@ -164,24 +139,6 @@
   transition: all 0.3s ease;
 }
 
-.project-card:hover .project-tag {
-  border-color: rgba(0, 212, 255, 0.3);
-  color: var(--accent-cyan);
-  background: rgba(0, 212, 255, 0.08);
-}
-
-@media (max-width: 1024px) {
-  .featured-project,
-  .featured-project-rev {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .featured-project-rev .featured-img-wrap {
-    order: -1;
-  }
-}
-
 @media (max-width: 640px) {
   .featured-project {
     padding: 1.5rem;
@@ -190,26 +147,6 @@
 
   .featured-title {
     font-size: 1.4rem;
-  }
-
-  .featured-img-wrap {
-    height: 220px;
-    background: #0d1117;
-  }
-
-  /* Homelab demo needs more vertical space on mobile */
-  .featured-img-wrap--demo {
-    height: 460px;
-  }
-
-  .featured-img {
-    object-fit: contain;
-    object-position: center;
-  }
-
-  .featured-img--cover {
-    object-fit: cover;
-    object-position: top left;
   }
 
   .featured-footer {

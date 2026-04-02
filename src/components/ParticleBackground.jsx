@@ -12,17 +12,10 @@ export default function ParticleBackground() {
 
     const resize = () => {
       canvas.width = window.innerWidth
-      canvas.height = document.documentElement.scrollHeight
+      canvas.height = window.innerHeight
     }
     resize()
     window.addEventListener('resize', resize)
-
-    // Re-size when page height changes (e.g. after images load)
-    const resizeObserver = new ResizeObserver(() => {
-      canvas.width = window.innerWidth
-      canvas.height = document.documentElement.scrollHeight
-    })
-    resizeObserver.observe(document.documentElement)
 
     const particles = []
     const count = 120
@@ -79,7 +72,6 @@ export default function ParticleBackground() {
     return () => {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', resize)
-      resizeObserver.disconnect()
     }
   }, [])
 

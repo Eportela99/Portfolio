@@ -1,5 +1,35 @@
 .contact {
-  background: var(--bg-primary);
+  background: transparent;
+}
+
+/* ── Glitch on title ── */
+.contact-title {
+  position: relative;
+  animation: glitch 5s infinite;
+}
+
+.contact-title::before,
+.contact-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.contact-title::before {
+  color: #ff0080;
+  animation: glitch-top 5s infinite;
+}
+
+.contact-title::after {
+  color: #00d4ff;
+  animation: glitch-bot 5s infinite;
 }
 
 .contact-grid {
@@ -90,6 +120,10 @@
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  background: rgba(6, 8, 14, 0.85);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
 }
 
 .form-group {

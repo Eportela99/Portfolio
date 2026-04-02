@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import './Projects.css'
 
 const GitHubIcon = () => (
@@ -58,46 +59,71 @@ const projects = [
 ]
 
 export default function Projects() {
+  const sectionRef = useRef(null)
+  const [revealed, setRevealed] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.1 }
+    )
+    if (sectionRef.current) observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section className="projects" id="projects">
       <div className="container">
         <div className="section-header fade-in">
-          <h2 className="section-title">Featured <span className="neon-text">Projects</span></h2>
+          <h2 className="section-title proj-title" data-text="Featured Projects">
+            Featured <span className="neon-text">Projects</span>
+          </h2>
           <div className="section-divider" />
           <p className="section-subtitle">A selection of things I&apos;ve built</p>
         </div>
 
-        {projects.map((proj) => (
-          <div key={proj.title} className="featured-project glass-card fade-in">
-            <div className="featured-info">
-              <div className="featured-label">Featured Project</div>
-              <h3 className="featured-title">{proj.title}</h3>
-              <p className="featured-subtitle">{proj.subtitle}</p>
-              <p className="featured-description">{proj.description}</p>
+        <div ref={sectionRef} className={`proj-list ${revealed ? 'proj-list--revealed' : ''}`}>
+          {projects.map((proj, idx) => (
+            <div
+              key={proj.title}
+              className={`featured-project ${idx % 2 === 0 ? 'proj--from-left' : 'proj--from-right'}`}
+              style={{ '--idx': idx }}
+            >
+              <div className="featured-info">
+                <div className="featured-label">Featured Project</div>
+                <h3 className="featured-title">{proj.title}</h3>
+                <p className="featured-subtitle">{proj.subtitle}</p>
+                <p className="featured-description">{proj.description}</p>
 
-              <ul className="featured-highlights">
-                {proj.highlights.map((h) => (
-                  <li key={h}>
-                    <span className="highlight-dot" />
-                    {h}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="featured-footer">
-                <div className="project-tags">
-                  {proj.tags.map((tag) => (
-                    <span key={tag} className="project-tag">{tag}</span>
+                <ul className="featured-highlights">
+                  {proj.highlights.map((h) => (
+                    <li key={h}>
+                      <span className="highlight-dot" />
+                      {h}
+                    </li>
                   ))}
+                </ul>
+
+                <div className="featured-footer">
+                  <div className="project-tags">
+                    {proj.tags.map((tag) => (
+                      <span key={tag} className="project-tag">{tag}</span>
+                    ))}
+                  </div>
+                  <a href={proj.github} className="project-link featured-gh" aria-label="GitHub" target="_blank" rel="noreferrer">
+                    <GitHubIcon />
+                    <span>View on GitHub</span>
+                  </a>
                 </div>
-                <a href={proj.github} className="project-link featured-gh" aria-label="GitHub" target="_blank" rel="noreferrer">
-                  <GitHubIcon />
-                  <span>View on GitHub</span>
-                </a>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import './Skills.css'
 import ollamaIcon from '../assets/ollama.png'
 import n8nIcon    from '../assets/n8n-color.png'
@@ -5,7 +6,7 @@ import n8nIcon    from '../assets/n8n-color.png'
 const CATEGORIES = [
   {
     title:  'Frontend',
-    icon:   '🖥',
+    tag:    'UI',
     accent: '#00d4ff',
     skills: [
       { name: 'React',      icon: 'devicon-react-original colored' },
@@ -18,7 +19,7 @@ const CATEGORIES = [
   },
   {
     title:  'Backend',
-    icon:   '⚙️',
+    tag:    'SRV',
     accent: '#a78bfa',
     skills: [
       { name: 'Node.js',    icon: 'devicon-nodejs-plain colored' },
@@ -31,22 +32,19 @@ const CATEGORIES = [
   },
   {
     title:  'Infrastructure',
-    icon:   '🏗',
+    tag:    'OPS',
     accent: '#60a5fa',
     skills: [
-      { name: 'Docker',           icon:  'devicon-docker-plain colored' },
-      { name: 'Linux',            icon:  'devicon-linux-plain colored' },
-      { name: 'Azure',            icon:  'devicon-azure-plain colored' },
-      { name: 'Git',              icon:  'devicon-git-plain colored' },
-      { name: 'Windows Server',   icon:  'devicon-windows8-original colored' },
-      { name: 'Active Directory', emoji: '🗂' },
-      { name: 'PowerShell',       icon:  'devicon-powershell-plain colored' },
-      { name: 'Networking',       emoji: '🌐' },
+      { name: 'Docker',  icon: 'devicon-docker-plain colored' },
+      { name: 'Linux',   icon: 'devicon-linux-plain colored' },
+      { name: 'Azure',   icon: 'devicon-azure-plain colored' },
+      { name: 'Git',     icon: 'devicon-git-plain colored' },
+      { name: 'Windows', icon: 'devicon-windows8-original colored' },
     ],
   },
   {
     title:  'Tools & AI',
-    icon:   '🛠',
+    tag:    'EXT',
     accent: '#34d399',
     skills: [
       { name: 'Blender', icon: 'devicon-blender-original colored' },
@@ -57,46 +55,68 @@ const CATEGORIES = [
 ]
 
 export default function Skills() {
+  const gridRef = useRef(null)
+  const [revealed, setRevealed] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.15 }
+    )
+    if (gridRef.current) observer.observe(gridRef.current)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section className="skills" id="skills">
       <div className="container">
         <div className="section-header fade-in">
-          <h2 className="section-title">Tech <span className="neon-text">Stack</span></h2>
+          <h2 className="section-title sk-title" data-text="Tech Stack">
+            Tech <span className="neon-text">Stack</span>
+          </h2>
           <div className="section-divider" />
           <p className="section-subtitle">Technologies I work with</p>
         </div>
 
-        <div className="sk-grid">
-          {CATEGORIES.map((cat) => (
+        <div ref={gridRef} className={`sk-grid ${revealed ? 'sk-grid--revealed' : ''}`}>
+          {CATEGORIES.map((cat, idx) => (
             <div
               key={cat.title}
-              className="sk-card fade-in"
-              style={{ '--accent': cat.accent }}
+              className="sk-panel"
+              style={{ '--accent': cat.accent, '--idx': idx }}
             >
-              {/* Glow orb behind card */}
-              <div className="sk-card-orb" />
+              {/* Corner accents */}
+              <div className="sk-corner sk-corner--tl" />
+              <div className="sk-corner sk-corner--br" />
 
               {/* Header */}
-              <div className="sk-card-header">
-                <span className="sk-cat-icon">{cat.icon}</span>
-                <span className="sk-cat-title">{cat.title}</span>
-                <span className="sk-cat-count">{cat.skills.length}</span>
+              <div className="sk-panel-header">
+                <span className="sk-panel-tag">{cat.tag}</span>
+                <span className="sk-panel-title">{cat.title}</span>
+                <span className="sk-panel-count">{cat.skills.length}</span>
               </div>
 
-              {/* Divider */}
-              <div className="sk-card-divider" />
+              {/* Circuit divider */}
+              <div className="sk-circuit-line">
+                <span className="sk-circuit-dot" />
+              </div>
 
-              {/* Skill chips */}
-              <div className="sk-chips">
+              {/* Skill items */}
+              <div className="sk-items">
                 {cat.skills.map((skill) => (
-                  <div key={skill.name} className="sk-chip">
-                    {skill.icon
-                      ? <i className={`${skill.icon} sk-chip-icon`} />
-                      : skill.img
-                        ? <img src={skill.img} alt={skill.name} className="sk-chip-img" />
-                        : <span className="sk-chip-emoji">{skill.emoji}</span>
-                    }
-                    <span className="sk-chip-name">{skill.name}</span>
+                  <div key={skill.name} className="sk-item">
+                    <div className="sk-item-icon">
+                      {skill.icon
+                        ? <i className={skill.icon} />
+                        : <img src={skill.img} alt={skill.name} />
+                      }
+                    </div>
+                    <span className="sk-item-name">{skill.name}</span>
                   </div>
                 ))}
               </div>

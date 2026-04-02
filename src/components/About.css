@@ -1,61 +1,204 @@
 .about {
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+/* ── Glitch effect on title ── */
+.about-title {
+  position: relative;
+  animation: glitch 5s infinite;
+}
+
+.about-title::before,
+.about-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.about-title::before {
+  color: #ff0080;
+  animation: glitch-top 5s infinite;
+}
+
+.about-title::after {
+  color: #00d4ff;
+  animation: glitch-bot 5s infinite;
+}
+
+/* ══════════════════════════════════════
+   Terminal Card
+══════════════════════════════════════ */
+.about-terminal {
+  position: relative;
+  background: #0a0e17;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 3rem;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+
+  /* Pre-open state — collapsed to a thin line */
+  opacity: 0;
+  transform: scaleY(0.01) scaleX(0.6);
+  transform-origin: center center;
+  transition: none;
+}
+
+/* ── Open animation ── */
+.about-terminal--on {
+  animation: term-open 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes term-open {
+  0%   { opacity: 1; transform: scaleY(0.01) scaleX(0.6); }
+  40%  { transform: scaleY(0.01) scaleX(1); }
+  100% { opacity: 1; transform: scaleY(1) scaleX(1); }
+}
+
+/* ── Title bar ── */
+.about-term-bar {
+  display: flex;
   align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #060a12;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
 }
 
-.about-heading {
-  font-size: 1.4rem;
+.about-term-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.about-term-dot--red    { background: #ff5f57; }
+.about-term-dot--yellow { background: #febc2e; }
+.about-term-dot--green  { background: #28c840; }
+
+.about-term-title {
+  margin-left: 10px;
+  font-size: 0.75rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* ── Terminal body ── */
+.about-term-body {
+  padding: 1.5rem 1.8rem 1.8rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.about-term-prompt {
+  color: var(--accent-cyan);
+  margin-right: 0.6rem;
+  font-weight: 700;
+}
+
+.about-term-cmd {
+  color: var(--accent-purple);
+  font-weight: 600;
+}
+
+.about-term-heading {
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
-  line-height: 1.4;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-.about-text p {
+.about-term-body p {
   color: var(--text-secondary);
   line-height: 1.8;
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-.about-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.5rem;
+/* Lines appear one by one after boot */
+.about-term-line {
+  opacity: 0;
+  transform: translateY(6px);
 }
 
-.tag {
-  padding: 0.35rem 0.9rem;
-  background: rgba(0, 212, 255, 0.08);
-  border: 1px solid rgba(0, 212, 255, 0.25);
-  border-radius: 20px;
-  font-size: 0.85rem;
+.about-terminal--on .about-term-line {
+  animation: term-line-in 0.4s ease-out forwards;
+}
+
+.about-terminal--on .about-term-line--1 { animation-delay: 0.8s; }
+.about-terminal--on .about-term-line--2 { animation-delay: 1.2s; }
+.about-terminal--on .about-term-line--3 { animation-delay: 1.6s; }
+.about-terminal--on .about-term-line--4 { animation-delay: 2.0s; }
+.about-terminal--on .about-term-line--5 { animation-delay: 2.4s; }
+
+@keyframes term-line-in {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Blinking cursor at the end */
+.about-term-cursor {
   color: var(--accent-cyan);
-  transition: all 0.3s ease;
+  font-weight: 700;
+  animation: blink 0.8s step-end infinite;
 }
 
-.tag:hover {
-  background: rgba(0, 212, 255, 0.15);
-  box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+/* ── CRT scan-lines overlay ── */
+.about-term-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  z-index: 1;
 }
 
-/* ── Cert carousel column ── */
-.about-carousel-wrap {
+/* Sweep line on boot */
+.about-terminal--on .about-term-scanlines::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -100%;
   width: 100%;
+  height: 60px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(0, 212, 255, 0.06),
+    rgba(0, 212, 255, 0.12),
+    rgba(0, 212, 255, 0.06),
+    transparent
+  );
+  animation: scanline-sweep 2s ease-in-out 0.3s forwards;
+}
+
+@keyframes scanline-sweep {
+  0%   { top: -60px; }
+  100% { top: 110%; }
+}
+
+/* ── Education & Certs below ── */
+.about-bottom {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 }
 
-/* ── Education ── */
 .about-education {
   display: flex;
   align-items: center;
@@ -67,6 +210,7 @@
   padding: 0.7rem 1rem;
   margin-bottom: 1.4rem;
   width: 100%;
+  max-width: 600px;
 }
 
 .about-edu-label {
@@ -96,8 +240,7 @@
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+  .about-term-body {
+    padding: 1rem 1.2rem 1.2rem;
   }
 }

@@ -30,7 +30,7 @@ export default function Contact() {
     <section className="contact" id="contact">
       <div className="container">
         <div className="section-header fade-in">
-          <h2 className="section-title">Get In <span className="neon-text">Touch</span></h2>
+          <h2 className="section-title contact-title" data-text="Get In Touch">Get In <span className="neon-text">Touch</span></h2>
           <div className="section-divider" />
           <p className="section-subtitle">Have a project in mind? Let&apos;s talk.</p>
         </div>
@@ -88,7 +88,7 @@ export default function Contact() {
             </div>
           </div>
 
-          <form className="contact-form glass-card fade-in" onSubmit={handleSubmit}>
+          <form className="contact-form fade-in" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="name" className="form-label">Name</label>
               <input

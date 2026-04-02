@@ -1,161 +1,234 @@
 /* ══════════════════════════════════════
-   Tech Stack — Glowing Border Cards
+   Tech Stack — Circuit Panel Cards
 ══════════════════════════════════════ */
 .skills {
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
+/* ── Glitch on title ── */
+.sk-title {
+  position: relative;
+  animation: glitch 5s infinite;
+}
+
+.sk-title::before,
+.sk-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.sk-title::before {
+  color: #ff0080;
+  animation: glitch-top 5s infinite;
+}
+
+.sk-title::after {
+  color: #00d4ff;
+  animation: glitch-bot 5s infinite;
+}
+
+/* ── Grid ── */
 .sk-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
-/* ── Card ── */
-.sk-card {
+/* ══════════════════════════════════════
+   Panel Card
+══════════════════════════════════════ */
+.sk-panel {
   position: relative;
-  border-radius: 18px;
   padding: 1.6rem;
-  /* Gradient border via border-box trick */
-  border: 1px solid transparent;
-  background:
-    linear-gradient(#0d1117, #0d1117) padding-box,
-    linear-gradient(135deg, var(--accent), rgba(255,255,255,0.06) 60%) border-box;
+  background: rgba(10, 14, 23, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  /* Pre-animation state */
+  opacity: 0;
+  transform: translateY(30px);
 }
 
-.sk-card:hover {
-  transform: translateY(-5px);
+.sk-panel:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
-    0 20px 50px rgba(0, 0, 0, 0.4),
-    0 0 40px color-mix(in srgb, var(--accent) 10%, transparent);
-  background:
-    linear-gradient(#0d1117, #0d1117) padding-box,
-    linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 30%, #7c3aed) 100%) border-box;
+    0 0 30px color-mix(in srgb, var(--accent) 10%, transparent),
+    inset 0 0 30px color-mix(in srgb, var(--accent) 4%, transparent);
 }
 
-/* Soft radial glow orb in the top-right */
-.sk-card-orb {
+/* ── Staggered reveal ── */
+.sk-grid--revealed .sk-panel {
+  animation: panel-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--idx) * 0.15s);
+}
+
+@keyframes panel-reveal {
+  0%   { opacity: 0; transform: translateY(30px); filter: blur(4px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* ── Corner accents ── */
+.sk-corner {
   position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 20%, transparent) 0%, transparent 70%);
+  width: 16px;
+  height: 16px;
   pointer-events: none;
+  opacity: 0.4;
   transition: opacity 0.3s ease;
-  opacity: 0.6;
 }
 
-.sk-card:hover .sk-card-orb {
-  opacity: 1;
+.sk-panel:hover .sk-corner {
+  opacity: 0.8;
+}
+
+.sk-corner--tl {
+  top: 0;
+  left: 0;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+
+.sk-corner--br {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
 }
 
 /* ── Header ── */
-.sk-card-header {
+.sk-panel-header {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
-.sk-cat-icon {
-  font-size: 1.4rem;
-  line-height: 1;
-}
-
-.sk-cat-title {
-  font-size: 1rem;
+.sk-panel-tag {
+  font-size: 0.6rem;
   font-weight: 800;
-  color: var(--accent);
-  flex: 1;
-  letter-spacing: 0.01em;
-}
-
-.sk-cat-count {
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  letter-spacing: 0.15em;
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  border-radius: 99px;
-  padding: 2px 9px;
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  padding: 2px 8px;
+  border-radius: 2px;
 }
 
-/* ── Divider ── */
-.sk-card-divider {
+.sk-panel-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  flex: 1;
+  letter-spacing: 0.03em;
+}
+
+.sk-panel-count {
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+}
+
+/* ── Circuit divider ── */
+.sk-circuit-line {
+  position: relative;
   height: 1px;
   background: linear-gradient(
     to right,
-    var(--accent),
-    color-mix(in srgb, var(--accent) 10%, transparent)
+    transparent,
+    color-mix(in srgb, var(--accent) 30%, transparent) 20%,
+    color-mix(in srgb, var(--accent) 30%, transparent) 80%,
+    transparent
   );
   margin-bottom: 1.1rem;
-  opacity: 0.35;
 }
 
-.sk-card:hover .sk-card-divider {
-  opacity: 0.6;
+.sk-circuit-dot {
+  position: absolute;
+  left: 10%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
 }
 
-/* ── Skill chips ── */
-.sk-chips {
+.sk-panel:hover .sk-circuit-dot {
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 6px var(--accent); }
+  50%      { box-shadow: 0 0 14px var(--accent), 0 0 24px var(--accent); }
+}
+
+/* ══════════════════════════════════════
+   Skill Items — Icon Grid
+══════════════════════════════════════ */
+.sk-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.6rem;
+}
+
+.sk-item {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.sk-chip {
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 99px;
-  cursor: default;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
 }
 
-.sk-chip:hover {
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 15%, transparent);
+.sk-item:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-.sk-chip-icon {
-  font-size: 1.1rem;
-  line-height: 1;
+.sk-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
-  transition: filter 0.2s ease;
 }
 
-.sk-chip-img {
-  width: 1.1rem;
-  height: 1.1rem;
+.sk-item-icon i {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.sk-item-icon img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  flex-shrink: 0;
-  transition: filter 0.2s ease;
 }
 
-.sk-chip-emoji {
-  font-size: 1rem;
-  line-height: 1;
-  flex-shrink: 0;
-  width: 1.1rem;
-  text-align: center;
-}
-
-.sk-chip:hover .sk-chip-icon,
-.sk-chip:hover .sk-chip-img {
+.sk-item:hover .sk-item-icon i,
+.sk-item:hover .sk-item-icon img {
   filter: drop-shadow(0 0 4px var(--accent));
 }
 
-.sk-chip-name {
-  font-size: 0.8rem;
+.sk-item-name {
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -169,15 +242,15 @@
 }
 
 @media (max-width: 480px) {
-  .sk-card {
+  .sk-panel {
     padding: 1.2rem;
   }
 
-  .sk-chip {
-    padding: 4px 9px;
+  .sk-items {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
   }
 
-  .sk-chip-name {
-    font-size: 0.75rem;
+  .sk-item-name {
+    font-size: 0.72rem;
   }
 }

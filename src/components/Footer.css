@@ -1,5 +1,5 @@
 .footer {
-  background: var(--bg-secondary);
+  background: transparent;
   border-top: 1px solid rgba(0, 212, 255, 0.1);
   padding: 2rem 0;
 }

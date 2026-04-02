@@ -37,7 +37,7 @@ export default function Experience() {
     <section className="experience" id="experience">
       <div className="container">
         <div className="section-header fade-in">
-          <h2 className="section-title">Work <span className="neon-text">Experience</span></h2>
+          <h2 className="section-title exp-title" data-text="Work Experience">Work <span className="neon-text">Experience</span></h2>
           <div className="section-divider" />
           <p className="section-subtitle">Where I&apos;ve put my skills to work</p>
         </div>

@@ -9,6 +9,7 @@ import Projects from './components/Projects'
 
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import ParticleBackground from './components/ParticleBackground'
 
 function App() {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -48,6 +49,7 @@ function App() {
 
   return (
     <div className="app">
+      <ParticleBackground />
       <div className="scroll-progress-bar" style={{ width: `${scrollProgress}%` }} />
       <Navbar />
       <main>
